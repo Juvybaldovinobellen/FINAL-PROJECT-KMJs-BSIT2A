@@ -61,6 +61,16 @@ const updateRequestStatus = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+  const Notification = require('../models/Notification');
+
+  // after updating the request status
+  const notification = await Notification.create({
+    user: req.studentId, // or the request's studentId
+    title: `Request ${newStatus}`,
+    message: `Your request for ${request.documentType} has been ${newStatus}.`,
+    type: newStatus === 'rejected' ? 'warning' : 'info'
+  });
+
 };
 
 module.exports = { createRequest, getMyRequests, getAllRequests, updateRequestStatus };

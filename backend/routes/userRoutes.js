@@ -27,4 +27,24 @@ router.delete('/:id', protect, staffOnly, async (req, res) => {
   res.json({ message: 'User deleted' });
 });
 
+// PUT /api/users/:id/password
+router.put('/:id/password', protect, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) return res.status(401).json({ message: 'Current password incorrect' });
+    
+    if (newPassword.length < 6) return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    
+    user.password = newPassword;
+    await user.save();
+    res.json({ message: 'Password updated successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

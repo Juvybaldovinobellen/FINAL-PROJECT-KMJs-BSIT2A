@@ -1,4 +1,3 @@
-// Force DNS - Add at the VERY TOP
 const dns = require('dns');
 dns.setServers(['8.8.8.8', '1.1.1.1']);
 
@@ -21,8 +20,14 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const staffRoutes = require('./routes/staffRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
-app.use('/api/auth', authRoutes);
+app.use('/api/feedback', feedbackRoutes);
+app.use('/api/notifications', (req, res, next) => {
+  console.log("TEST ROUTE HIT");
+  next();
+});app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/staff', staffRoutes);
@@ -35,7 +40,7 @@ app.get('/', (req, res) => {
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`\n🚀 Server running on port ${PORT}`);
+  console.log('\n🚀 Server running on port ${PORT}');
   console.log('\n✅ Available endpoints:');
   console.log('   POST   /api/auth/register');
   console.log('   POST   /api/auth/login');
