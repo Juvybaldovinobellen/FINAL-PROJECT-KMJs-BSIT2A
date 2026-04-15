@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BU Transakto - Staff</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- SIDEBAR / NAVIGATION -->
+<div class="sidebar">
+    <h2>Staff Panel</h2>
+    <ul>
+        <li id="nav-dashboard">Dashboard</li>
+        <li id="nav-manage">Manage Requests</li>
+        <li id="nav-notifications">Notifications</li>
+        <li id="nav-history">History</li>
+        <li id="nav-profile">Profile</li>
+        <li id="nav-settings">Settings</li>
+        <li id="nav-logout">Logout</li>
+    </ul>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="section active">
+        <h1>Dashboard</h1>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Total Requests</h3>
+                <p id="totalRequests">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Pending Requests</h3>
+                <p id="pendingRequests">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Approved Requests</h3>
+                <p id="approvedRequests">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Completed Requests</h3>
+                <p id="completedRequests">0</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MANAGE REQUESTS -->
+    <section id="manage" class="section">
+        <h1>Manage Requests</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Course</th>
+                    <th>Year/Block</th>
+                    <th>Document Type</th>
+                    <th>Additional Info</th>
+                    <th>Date Requested</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="requestTable">
+                <!-- JS will populate this -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- NOTIFICATIONS -->
+    <section id="notifications" class="section">
+        <h1>Notifications</h1>
+
+        <ul id="notificationList">
+            <!-- JS will populate -->
+        </ul>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="history" class="section">
+        <h1>History</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Document</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody id="historyTable">
+                <!-- JS will populate -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="profile" class="section">
+        <h1>Profile</h1>
+
+        <div class="profile-info">
+            <label>Name:</label>
+            <input type="text" id="staffName" value="Staff Admin">
+
+            <label>Role:</label>
+            <input type="text" value="Administrator" disabled>
+        </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settings" class="section">
+        <h1>Settings</h1>
+
+        <div class="settings-group">
+            <button id="changePasswordBtn">Change Password</button>
+        </div>
+
+        <div class="settings-group">
+            <button id="toggleThemeBtn">Toggle Dark Mode</button>
+        </div>
+
+        <div class="settings-group">
+            <label>
+                <input type="checkbox" id="notificationToggle" checked>
+                Enable Notifications
+            </label>
+        </div>
+    </section>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

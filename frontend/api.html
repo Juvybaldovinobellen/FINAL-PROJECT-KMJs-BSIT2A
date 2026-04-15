@@ -1,0 +1,95 @@
+// API Service for BU Transakto
+const API_BASE_URL = 'http://localhost:5000/api';
+
+// Helper function for API calls
+async function apiCall(endpoint, method, data) {
+    try {
+        const options = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        };
+        
+        if (data) {
+            options.body = JSON.stringify(data);
+        }
+        
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+        const result = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(result.error || 'Something went wrong');
+        }
+        
+        return result;
+    } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+    }
+}
+
+// User API functions
+const UserAPI = {
+    // Register new user
+    register: async (email, password, studentData) => {
+        return await apiCall('/users/register', 'POST', {
+            email,
+            password,
+            studentData
+        });
+    },
+    
+    // Login user
+    login: async (email, password) => {
+        return await apiCall('/users/login', 'POST', {
+            email,
+            password
+        });
+    },
+    
+    // Get user by email
+    getUser: async (email) => {
+        return await apiCall(`/users/${encodeURIComponent(email)}`, 'GET');
+    },
+    
+    // Update user profile
+    updateUser: async (email, studentData) => {
+        return await apiCall(`/users/${encodeURIComponent(email)}`, 'PUT', {
+            studentData
+        });
+    }
+};
+
+// Request API functions
+const RequestAPI = {
+    // Create new request
+    createRequest: async (studentEmail, documentType, purpose, notes) => {
+        return await apiCall('/requests', 'POST', {
+            studentEmail,
+            documentType,
+            purpose,
+            notes
+        });
+    },
+    
+    // Get all requests (admin)
+    getAllRequests: async () => {
+        return await apiCall('/requests', 'GET');
+    },
+    
+    // Get student's requests
+    getStudentRequests: async (email) => {
+        return await apiCall(`/requests/student/${encodeURIComponent(email)}`, 'GET');
+    },
+    
+    // Update request status
+    updateRequest: async (requestId, updates) => {
+        return await apiCall(`/requests/${requestId}`, 'PUT', updates);
+    },
+    
+    // Delete request
+    deleteRequest: async (requestId) => {
+        return await apiCall(`/requests/${requestId}`, 'DELETE');
+    }
+};

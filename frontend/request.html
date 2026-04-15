@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Student Document Request</title>
+    <!-- CSS will be linked here -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="form-container">
+        <div class="request-card">
+            <h2> Request a Document</h2>
+            <p class="subhead">Office of the Registrar</p>
+
+            <form id="documentRequestForm">
+                <!-- 1. Document Type Dropdown -->
+                <div class="form-group">
+                    <label for="docType">Select Document Type <span class="required">*</span></label>
+                    <select id="docType" name="docType" required>
+                        <option value="" disabled selected> Please select</option>
+                        <option value="Certificate of Enrollment">Certificate of Enrollment</option>
+                        <option value="Certificate of Grades">Certificate of Grades</option>
+                        <option value="Good Moral">Good Moral</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+
+                <!-- Conditional: Specify Document (for "Others") -->
+                <div id="specifyDocumentGroup" class="conditional-field">
+                    <div class="form-group">
+                        <label for="specifyDoc">Specify Document <span class="required">*</span></label>
+                        <input type="text" id="specifyDoc" name="specifyDoc" placeholder="e.g., Internship Letter, Scholarship Form">
+                    </div>
+                </div>
+
+                <!-- 2. Student Information Section -->
+                <div class="form-row">
+                    <div class="form-group half-width">
+                        <label for="fullName">Full Name <span class="required">*</span></label>
+                        <input type="text" id="fullName" name="fullName" placeholder="Last, First Middle" required>
+                    </div>
+                    <div class="form-group half-width">
+                        <label for="course">Course <span class="required">*</span></label>
+                        <input type="text" id="course" name="course" placeholder="e.g., BS Computer Science" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half-width">
+                        <label for="block">Block <span class="required">*</span></label>
+                        <input type="text" id="block" name="block" placeholder="e.g., A, B, 1A" required>
+                    </div>
+                    <div class="form-group half-width">
+                        <label for="year">Year <span class="required">*</span></label>
+                        <select id="year" name="year" required>
+                            <option value="" disabled selected>Select Year</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 3. Conditional Semester Dropdown (Only for Certificate of Grades) -->
+                <div id="semesterGroup" class="conditional-field">
+                    <div class="form-group">
+                        <label for="semester">Select Semester <span class="required">*</span></label>
+                        <select id="semester" name="semester">
+                            <option value="" disabled selected> Choose semester </option>
+                            <option value="1st Sem SY 2024–2025">1st Sem SY 2024–2025</option>
+                            <option value="2nd Sem SY 2024–2025">2nd Sem SY 2024–2025</option>
+                            <option value="1st Sem SY 2023–2024">1st Sem SY 2023–2024</option>
+                            <option value="2nd Sem SY 2023–2024">2nd Sem SY 2023–2024</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 4. Quantity -->
+                <div class="form-group">
+                    <label for="quantity">Number of Copies <span class="required">*</span></label>
+                    <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+                </div>
+
+                <!-- 5. Submit Button -->
+                <button type="submit" class="submit-btn"> Submit Request</button>
+                <div id="successMessage" class="success-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

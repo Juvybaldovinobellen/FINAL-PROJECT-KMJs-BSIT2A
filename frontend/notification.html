@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BU Transakto - Notifications</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <h1>BU TRANSAKTO</h1>
+
+        <div class="notification-bell" onclick="togglePanel()">
+          🔔 <span id="badge" class="badge">0</span>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="container">
+
+        <section class="controls">
+            <input type="text" id="searchInput" placeholder="Search notifications...">
+
+            <select id="filterSelect">
+                <option value="all">All</option>
+                <option value="read">Read</option>
+                <option value="unread">Unread</option>
+                <option value="Approved">Approved</option>
+                <option value="Pending">Pending</option>
+                <option value="Ready">Ready for Pickup</option>
+                <option value="Completed">Completed</option>
+                <option value="System">System Alert</option>
+            </select>
+
+            <button onclick="markAllRead()">Mark All as Read</button>
+            <button onclick="simulateNotification()">Simulate Notification</button>
+        </section>
+
+        <!-- NOTIFICATIONS LIST -->
+        <section id="notificationList" class="notification-list"></section>
+
+        <!-- EMPTY STATE -->
+        <div id="emptyState" class="empty">
+            No notifications available.
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

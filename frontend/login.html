@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - BU Transakto</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="signin-container">
+    <div class="glass-card">
+        <h1>Login</h1>
+
+        <form id="loginForm">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+
+            <button type="submit">Login</button>
+            <a href="register.html">Create Account</a>
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    const res = await fetch("http://localhost:5000/api/users");
+    const users = await res.json();
+
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+        window.location.href = "dashboard.html";
+    } else {
+        alert("Invalid login");
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BU Transakto - Feedback</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .feedback-card {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            max-width: 550px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+        .feedback-card h2 { text-align: center; margin-bottom: 0.5rem; }
+        .subtext { text-align: center; color: #6b7280; margin-bottom: 1.5rem; }
+        .label { font-weight: 500; margin: 1rem 0 0.5rem 0; display: block; }
+        .stars { display: flex; gap: 0.5rem; justify-content: center; margin: 0.5rem 0; }
+        .stars span { font-size: 2rem; cursor: pointer; color: #d1d5db; transition: 0.2s; }
+        .stars span.selected { color: #f59e0b; }
+        .helper-text { font-size: 0.75rem; color: #6b7280; text-align: center; }
+        select, textarea { width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 12px; font-family: 'Poppins', sans-serif; margin-top: 0.5rem; }
+        .emoji-container { display: flex; gap: 1rem; justify-content: center; margin: 1rem 0; }
+        .emoji { font-size: 1.8rem; cursor: pointer; transition: 0.2s; padding: 0.25rem; border-radius: 50%; }
+        .emoji:hover { transform: scale(1.2); background: #f3f4f6; }
+        .btn-primary { background: linear-gradient(135deg,#f59e0b,#3b82f6); color: white; border: none; padding: 0.75rem; border-radius: 12px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 1rem; }
+        .btn-secondary { background: #6c757d; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; margin-top: 1rem; width: auto; }
+        .success-message { color: #10b981; text-align: center; margin-top: 1rem; display: none; }
+        .button-group { display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+<div class="feedback-card">
+    <h2>💬 Feedback & Suggestions</h2>
+    <p class="subtext">We value your opinion. Please share your experience.</p>
+
+    <label class="label">Rate your experience</label>
+    <div class="stars" id="stars">
+        <span data-value="1">★</span>
+        <span data-value="2">★</span>
+        <span data-value="3">★</span>
+        <span data-value="4">★</span>
+        <span data-value="5">★</span>
+    </div>
+    <p id="ratingLabel" class="helper-text">Click a star to rate</p>
+
+    <label class="label">What is your feedback about?</label>
+    <select id="feedbackCategory">
+        <option value="" disabled selected>Select a category</option>
+        <option>Document Request Process</option>
+        <option>System Performance</option>
+        <option>User Interface</option>
+        <option>Notifications</option>
+        <option>Others</option>
+    </select>
+
+    <label class="label">Tell us more (optional)</label>
+    <textarea id="feedbackMessage" rows="3" placeholder="Describe your experience..."></textarea>
+
+    <p class="label center">Quick reaction</p>
+    <div class="emoji-container" id="emojiContainer">
+        <span class="emoji" data-reaction="Very Bad">😡</span>
+        <span class="emoji" data-reaction="Bad">😕</span>
+        <span class="emoji" data-reaction="Neutral">😐</span>
+        <span class="emoji" data-reaction="Good">🙂</span>
+        <span class="emoji" data-reaction="Excellent">😄</span>
+    </div>
+
+    <button id="submitFeedbackBtn" class="btn-primary">Submit Feedback</button>
+    <p id="feedbackSuccessMsg" class="success-message">✔️ Thank you! Your feedback has been recorded.</p>
+
+    <div class="button-group">
+        <button id="closeBtn" class="btn-secondary">Close</button>
+    </div>
+</div>
+
+<script>
+    // Star rating logic
+    document.querySelectorAll('#stars span').forEach(star => {
+        star.addEventListener('click', function() {
+            const val = parseInt(this.getAttribute('data-value'));
+            document.querySelectorAll('#stars span').forEach((s, idx) => {
+                if(idx < val) s.classList.add('selected');
+                else s.classList.remove('selected');
+            });
+            document.getElementById('ratingLabel').innerText = `You rated ${val} star${val !== 1 ? 's' : ''}`;
+        });
+    });
+
+    // Emoji selection
+    document.querySelectorAll('#emojiContainer .emoji').forEach(emoji => {
+        emoji.addEventListener('click', function() {
+            document.querySelectorAll('#emojiContainer .emoji').forEach(e => e.style.background = 'transparent');
+            this.style.background = '#fef3c7';
+        });
+    });
+
+    // Submit feedback
+    document.getElementById('submitFeedbackBtn').addEventListener('click', () => {
+        const rating = document.querySelectorAll('#stars span.selected').length;
+        const category = document.getElementById('feedbackCategory').value;
+        const message = document.getElementById('feedbackMessage').value.trim();
+        let selectedEmoji = '';
+        document.querySelectorAll('#emojiContainer .emoji').forEach(e => {
+            if(e.style.background === 'rgb(254, 243, 199)' || e.style.background === '#fef3c7') {
+                selectedEmoji = e.getAttribute('data-reaction') || e.innerText;
+            }
+        });
+        if(rating === 0) { alert('Please rate your experience.'); return; }
+        if(!category || category === 'Select a category') { alert('Please select a category.'); return; }
+        const feedback = {
+            id: Date.now(),
+            user: localStorage.getItem('currentUserName') || 'Anonymous',
+            rating: rating,
+            category: category,
+            message: message || '(no message)',
+            emoji: selectedEmoji || 'none',
+            date: new Date().toLocaleString()
+        };
+        let allFeedback = JSON.parse(localStorage.getItem('userFeedback')) || [];
+        allFeedback.push(feedback);
+        localStorage.setItem('userFeedback', JSON.stringify(allFeedback));
+        document.getElementById('feedbackSuccessMsg').style.display = 'block';
+        setTimeout(() => window.close(), 2000);
+    });
+
+    document.getElementById('closeBtn').addEventListener('click', () => window.close());
+</script>
+</body>
+</html>
