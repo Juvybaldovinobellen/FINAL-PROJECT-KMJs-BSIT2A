@@ -910,7 +910,7 @@
     window.openAvatarModal = openAvatarModal;
     window.closeAvatarModal = closeAvatarModal;
     window.uploadAvatar = uploadAvatar;
-    window.openSettingsPage = openSettingsPage;
+    window.openSettingsPage = openSettingsPage; 
     window.updateNotificationBadge = updateNotificationBadge;
     window.filterStaffRequests = filterStaffRequests;
     window.updateRequestStatus = updateRequestStatus;
@@ -918,4 +918,7 @@
     window.closeStaffNotificationsModal = closeStaffNotificationsModal;
 </script>
 </body>
+<button onclick="fetch('http://localhost:5000/').then(r=>r.json()).then(d=>alert('✅ Connected: '+d.message)).catch(()=>alert('❌ Not connected'))" style="position:fixed; bottom:20px; right:20px; background:blue; color:white; padding:10px; border-radius:10px; z-index:9999">
+    Check Connection
+</button>
 </html>
