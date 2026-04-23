@@ -475,7 +475,7 @@ body {
     font-weight: 800;
     background: linear-gradient(135deg, #f59e0b 0%, #3b82f6 100%);
     -webkit-background-clip-: text;
-    -webkit-text-fill-color-: transparent;
+    -webkit-text-fill-color: transparent;
 }
 
 .sidebar-nav {
@@ -2192,7 +2192,7 @@ input:checked + .slider:before {
     font-weight: 800;
     background: linear-gradient(135deg, #f59e0b 0%, #3b82f6 100%);
     -webkit-background-clip-: text;
-    -webkit-text-fill-color-: transparent;
+    -webkit-text-fill-color: transparent;
 }
 
 .nav-right {
@@ -2377,7 +2377,7 @@ input:checked + .slider:before {
     font-size: 2rem;
     background: linear-gradient(135deg, #f59e0b 0%, #3b82f6 100%);
     -webkit-background-clip-: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color-: transparent;
     margin-bottom: 1rem;
 }
 
@@ -2466,7 +2466,7 @@ input:checked + .slider:before {
     font-size: 1.5rem;
     background: linear-gradient(135deg, #f59e0b 0%, #3b82f6 100%);
     -webkit-background-clip-: text;
-    -webkit-text-fill-color-: transparent;
+    -webkit-text-fill-color: transparent;
 }
 
 .error-message {
@@ -2565,7 +2565,7 @@ input:checked + .slider:before {
     font-size: 1.5rem;
     background: linear-gradient(135deg, #f59e0b 0%, #3b82f6 100%);
     -webkit-background-clip-: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color-: transparent;
 }
 
 .settings-logo h3 {
