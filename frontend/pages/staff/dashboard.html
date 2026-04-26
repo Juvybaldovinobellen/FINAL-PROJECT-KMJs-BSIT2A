@@ -9,17 +9,19 @@
     <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body class="dashboard-body">
-    
+
     <!-- ==================== SIDEBAR ==================== -->
     <aside class="sidebar staff-sidebar" id="staffSidebar">
         <div class="sidebar-brand">
-            <div class="brand-logo"><i class="fas fa-shield-haltered"></i></div>
-            <div class="brand-text">
-                <h3>BU Transakto</h3>
-                <span>Staff Portal</span>
-            </div>
-        </div>
-        
+    <div class="brand-logo">
+        <img src="../../img/transakto.png" alt="BU Logo" width="40" height="40" style="object-fit:contain;border-radius:8px;">
+    </div>
+    <div class="brand-text">
+        <h3>BU Transakto</h3>
+        <span>Staff Portal</span>
+    </div>
+</div>
+
         <nav class="sidebar-nav">
             <div class="nav-section">
                 <div class="nav-section-title">Management</div>
@@ -47,9 +49,10 @@
                 </a>
             </div>
         </nav>
-        
+
+        <!-- Sidebar Footer with Logout -->
         <div class="sidebar-footer">
-            <div class="user-info-mini logout-btn">
+            <div class="user-info-mini logout-btn" style="cursor:pointer;">
                 <div class="user-avatar-mini" id="sidebarAvatar">A</div>
                 <div class="user-details-mini">
                     <h4 id="sidebarName">Admin</h4>
@@ -62,7 +65,7 @@
 
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="main-content" id="mainContent">
-        
+
         <!-- Topbar -->
         <header class="topbar">
             <div class="topbar-left">
@@ -94,15 +97,14 @@
 
         <!-- Page Content -->
         <div class="page-content">
-            
+
             <!-- ========== DASHBOARD SECTION ========== -->
             <section id="dashboardSection" class="page-section">
                 <div class="page-header">
                     <h2>Staff Dashboard</h2>
                     <p>Overview of document requests and system activity</p>
                 </div>
-                
-                <!-- Stats Grid -->
+
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon primary"><i class="fas fa-file-alt"></i></div>
@@ -148,7 +150,6 @@
                     </div>
                 </div>
 
-                <!-- Recent Requests -->
                 <div class="card">
                     <div class="card-header">
                         <h3>Recent Requests</h3>
@@ -170,12 +171,11 @@
                     <h2>All Document Requests</h2>
                     <p>Manage and process student document requests</p>
                 </div>
-                
                 <div class="card">
                     <div class="card-header">
                         <h3>Requests List</h3>
                         <div class="filters-bar" style="margin-bottom:0;">
-                            <input type="text" class="form-input search-box" id="requestSearch" placeholder="Search requests..." style="max-width:250px;">
+                            <input type="text" class="form-input" id="requestSearch" placeholder="Search requests..." style="max-width:250px;">
                             <button class="filter-btn active" data-filter="all">All</button>
                             <button class="filter-btn" data-filter="pending">Pending</button>
                             <button class="filter-btn" data-filter="processing">Processing</button>
@@ -198,7 +198,6 @@
                     <h2>Registered Students</h2>
                     <p>View all registered students and their request history</p>
                 </div>
-                
                 <div class="card">
                     <div class="card-header">
                         <h3>Student List</h3>
@@ -208,7 +207,6 @@
                         <div class="empty-state">
                             <div class="empty-icon">👥</div>
                             <h4>No students registered</h4>
-                            <p>Students will appear here after registration</p>
                         </div>
                     </div>
                 </div>
@@ -220,11 +218,7 @@
                     <h2>Student Feedback</h2>
                     <p>Review feedback submitted by students</p>
                 </div>
-                
                 <div class="card">
-                    <div class="card-header">
-                        <h3>Feedback Overview</h3>
-                    </div>
                     <div class="card-body">
                         <div class="stats-grid" style="margin-bottom:1.5rem;">
                             <div class="stat-card">
@@ -258,7 +252,6 @@
                     <h2>System Notifications</h2>
                     <p>View system notifications and updates</p>
                 </div>
-                
                 <div class="card">
                     <div class="card-header">
                         <h3>All Notifications</h3>
@@ -272,7 +265,6 @@
                             <h4>No notifications</h4>
                         </div>
                     </div>
-                </div>
             </section>
 
             <!-- ========== SETTINGS SECTION ========== -->
@@ -281,7 +273,6 @@
                     <h2>Settings</h2>
                     <p>Manage your staff account settings</p>
                 </div>
-                
                 <div class="card">
                     <div class="card-body">
                         <div class="settings-section">
@@ -361,5 +352,26 @@
     <script src="../../js/api.js"></script>
     <script src="../../js/auth.js"></script>
     <script src="../../js/staff-dashboard.js"></script>
+
+
+    <!-- Scroll to Top Button -->
+<button class="scroll-top-btn" id="scrollTopBtn" title="Back to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<script>
+// Scroll to top button
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+        scrollTopBtn.classList.add('show');
+    } else {
+        scrollTopBtn.classList.remove('show');
+    }
+});
+scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
 </body>
 </html>

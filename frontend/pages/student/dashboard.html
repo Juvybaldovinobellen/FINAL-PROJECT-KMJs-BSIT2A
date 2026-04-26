@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - BU Transakto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+       <div class="sidebar-brand">
+    <div class="brand-logo">
+         <img src="../../img/transakto.png" alt="BU Logo" width="40" height="40" style="object-fit:contain;border-radius:8px;">
+    </div>
+    <div class="brand-text">
+        <h3>BU Transakto</h3>
+        <span>Student Portal</span>
+    </div>
+</div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main Menu</div>
+                <a class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home nav-icon"></i> Dashboard
+                </a>
+                <a class="nav-item" data-page="request">
+                    <i class="fas fa-file-alt nav-icon"></i> New Request
+                </a>
+                <a class="nav-item" data-page="myrequests">
+                    <i class="fas fa-list-check nav-icon"></i> My Requests
+                </a>
+                <a class="nav-item" data-page="history">
+                    <i class="fas fa-clock-rotate-left nav-icon"></i> History
+                </a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Account</div>
+                <a class="nav-item" data-page="profile">
+                    <i class="fas fa-user nav-icon"></i> Profile
+                </a>
+                <a class="nav-item" data-page="settings">
+                    <i class="fas fa-cog nav-icon"></i> Settings
+                </a>
+                <a class="nav-item" data-page="feedback">
+                    <i class="fas fa-star nav-icon"></i> Feedback
+                </a>
+            </div>
+        </nav>
+
+        <!-- Sidebar Footer with Logout -->
+        <div class="sidebar-footer">
+            <div class="user-info-mini logout-btn" style="cursor:pointer;">
+                <div class="user-avatar-mini" id="sidebarAvatar">S</div>
+                <div class="user-details-mini">
+                    <h4 id="sidebarName">Student</h4>
+                    <p id="sidebarRole">Student</p>
+                </div>
+                <i class="fas fa-sign-out-alt" style="margin-left:auto;color:var(--gray-400);"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main-content" id="mainContent">
+
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="breadcrumb">
+                    <i class="fas fa-home"></i> <span id="breadcrumbPage">Dashboard</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="topbar-btn" id="notificationBtn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge hidden" id="notifBadge">0</span>
+                </button>
+                <div class="topbar-user">
+                    <div class="user-avatar" id="topbarAvatar">S</div>
+                    <div>
+                        <div class="user-name" id="topbarName">Student</div>
+                        <div class="user-role">Student</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+
+            <!-- ========== DASHBOARD SECTION ========== -->
+            <section id="dashboardSection" class="page-section">
+                <div class="page-header">
+                    <h2>Dashboard</h2>
+                    <p>Welcome back, <strong id="welcomeName">Student</strong>!</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon primary"><i class="fas fa-file-alt"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalRequests">0</div>
+                            <div class="stat-label">Total Requests</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon warning"><i class="fas fa-clock"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="pendingRequests">0</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon info"><i class="fas fa-spinner"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="processingRequests">0</div>
+                            <div class="stat-label">Processing</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="completedRequests">0</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Requests</h3>
+                        <a href="#" data-page="myrequests" class="nav-link" style="color:var(--primary);font-size:var(--text-sm);">View All</a>
+                    </div>
+                    <div class="card-body" id="recentRequestsTable">
+                        <div class="empty-state">
+                            <div class="empty-icon">📄</div>
+                            <h4>No requests yet</h4>
+                            <p>Start by submitting a document request</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== REQUEST FORM SECTION ========== -->
+            <section id="requestSection" class="page-section hidden">
+                <div class="page-header">
+                    <h2>Request Document</h2>
+                    <p>Fill out the form to request a document from the Registrar's Office</p>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <form id="requestForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Document Type <span class="required">*</span></label>
+                                    <select class="form-input" id="docType" required>
+                                        <option value="">Select Document</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Purpose <span class="required">*</span></label>
+                                    <select class="form-input" id="purpose" required>
+                                        <option value="">Select Purpose</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group hidden" id="specifyDocGroup">
+                                <label>Specify Document <span class="required">*</span></label>
+                                <input type="text" class="form-input" id="specifyDoc" placeholder="Enter document name">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Semester & Year</label>
+                                    <input type="text" class="form-input" id="semesterYear" placeholder="e.g., 1st Semester 2024-2025">
+                                </div>
+                                <div class="form-group">
+                                    <label>Number of Copies <span class="required">*</span></label>
+                                    <input type="number" class="form-input" id="copies" min="1" max="10" value="1" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Additional Notes</label>
+                                <textarea class="form-input" id="notes" rows="3" placeholder="Any additional information..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Submit Request
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== MY REQUESTS SECTION ========== -->
+            <section id="myRequestsSection" class="page-section hidden">
+                <div class="page-header">
+                    <h2>My Requests</h2>
+                    <p>Track the status of your document requests</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>All Requests</h3>
+                        <div class="filters-bar" style="margin-bottom:0;">
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="pending">Pending</button>
+                            <button class="filter-btn" data-filter="processing">Processing</button>
+                            <button class="filter-btn" data-filter="completed">Completed</button>
+                            <button class="filter-btn" data-filter="rejected">Rejected</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive" id="myRequestsTable">
+                        <div class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <h4>No requests found</h4>
+                            <p>Submit a request to get started</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== HISTORY SECTION ========== -->
+            <section id="historySection" class="page-section hidden">
+                <div class="page-header">
+                    <h2>Transaction History</h2>
+                    <p>View all your past document requests</p>
+                </div>
+                <div class="card">
+                    <div class="table-responsive" id="historyTable">
+                        <div class="empty-state">
+                            <div class="empty-icon">🕒</div>
+                            <h4>No history</h4>
+                            <p>Your transaction history will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== PROFILE SECTION ========== -->
+            <section id="profileSection" class="page-section hidden">
+                <div class="page-header">
+                    <h2>My Profile</h2>
+                    <p>View and manage your personal information</p>
+                </div>
+                <div class="profile-layout">
+                    <div class="profile-sidebar-card">
+                        <div class="profile-avatar-lg" id="profileAvatarLarge">S</div>
+                        <h3 class="profile-name-lg" id="profileFullName">Student Name</h3>
+                        <p class="text-muted" id="profileStudentId">Student ID</p>
+                        <button class="btn btn-primary btn-sm mt-3" style="width:auto;" onclick="StudentDashboard.openEditProfile()">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3>Personal Information</h3></div>
+                        <div class="card-body">
+                            <div class="profile-detail-grid" id="profileDetails"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== SETTINGS SECTION ========== -->
+            <section id="settingsSection" class="page-section hidden">
+                <div class="page-header">
+                    <h2>Settings</h2>
+                    <p>Manage your account preferences</p>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="settings-section">
+                            <h4 style="margin-bottom:1rem;">Appearance</h4>
+                            <div class="settings-item">
+                                <div class="settings-item-info">
+                                    <h4>Dark Mode</h4>
+                                    <p>Switch between light and dark theme</p>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" id="darkModeToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="settings-section">
+                            <h4 style="margin-bottom:1rem;">Security</h4>
+                            <button class="btn btn-secondary btn-sm" style="width:auto;" onclick="StudentDashboard.openChangePassword()">
+                                <i class="fas fa-key"></i> Change Password
+                            </button>
+                        </div>
+                        <div class="settings-section">
+                            <h4 style="margin-bottom:1rem;">Account</h4>
+                            <button class="btn btn-danger btn-sm" style="width:auto;" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== FEEDBACK SECTION ========== -->
+            <section id="feedbackSection" class="page-section hidden">
+                <div class="page-header">
+                    <h2>Feedback</h2>
+                    <p>Share your experience with BU Transakto</p>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <form id="feedbackForm">
+                            <div class="form-group text-center">
+                                <label>Rate your experience</label>
+                                <div class="star-rating" id="starRating">
+                                    <span class="star" data-value="1">★</span>
+                                    <span class="star" data-value="2">★</span>
+                                    <span class="star" data-value="3">★</span>
+                                    <span class="star" data-value="4">★</span>
+                                    <span class="star" data-value="5">★</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Category <span class="required">*</span></label>
+                                <select class="form-input" id="feedbackCategory" required>
+                                    <option value="">Select Category</option>
+                                    <option>Document Request Process</option>
+                                    <option>System Performance</option>
+                                    <option>User Interface</option>
+                                    <option>Notifications</option>
+                                    <option>Staff Service</option>
+                                    <option>Others</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Message</label>
+                                <textarea class="form-input" id="feedbackMessage" rows="3" placeholder="Tell us about your experience..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Submit Feedback
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ==================== NOTIFICATION PANEL ==================== -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notification-panel-header">
+            <h3>Notifications</h3>
+            <button class="btn btn-sm btn-secondary" style="width:auto;" id="markAllReadBtn">Mark all read</button>
+        </div>
+        <div class="notification-panel-body" id="notificationList">
+            <div class="empty-state">
+                <div class="empty-icon">🔔</div>
+                <h4>No notifications</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== EDIT PROFILE MODAL ==================== -->
+    <div class="modal-overlay hidden" id="editProfileModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="modal-close" onclick="StudentDashboard.closeModal('editProfileModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" class="form-input" id="editName">
+                        </div>
+                        <div class="form-group">
+                            <label>Student Number</label>
+                            <input type="text" class="form-input" id="editStudentId">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Course</label>
+                            <input type="text" class="form-input" id="editCourse">
+                        </div>
+                        <div class="form-group">
+                            <label>Year Level</label>
+                            <input type="text" class="form-input" id="editYearLevel">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="tel" class="form-input" id="editContact">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-input" id="editEmail">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea class="form-input" id="editAddress" rows="2"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="StudentDashboard.closeModal('editProfileModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script src="../../js/config.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/student-dashboard.js"></script>
+
+
+    <!-- Scroll to Top Button -->
+<button class="scroll-top-btn" id="scrollTopBtn" title="Back to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<script>
+// Scroll to top button
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+        scrollTopBtn.classList.add('show');
+    } else {
+        scrollTopBtn.classList.remove('show');
+    }
+});
+scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>

@@ -2,923 +2,242 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>BU Transakto - Registrar Document Request</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BU Transakto - Document Request System</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* ========== BASE STYLES (condensed but complete) ========== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; transition: background 0.3s, color 0.3s; }
-        body.dark-mode { background: #1a1a2e; }
-        body.dark-mode .glass-card, body.dark-mode .role-glass-card, body.dark-mode .sidebar, body.dark-mode .top-navbar, body.dark-mode .dashboard-card, body.dark-mode .stat-card, body.dark-mode .modal-content, body.dark-mode .settings-container { background: #2d2d44; color: #e0e0e0; }
-        body.dark-mode .nav-item, body.dark-mode .settings-nav-btn, body.dark-mode .settings-main-nav-btn { color: #cbd5e1; }
-        body.dark-mode .nav-item.active, body.dark-mode .settings-nav-btn.active { background: linear-gradient(135deg,#f59e0b,#3b82f6); color: white; }
-        body.dark-mode .form-input, body.dark-mode .form-group input, body.dark-mode .form-group select, body.dark-mode .form-group textarea { background: #1e1e2f; color: white; border-color: #444; }
-        .page { display: none; width: 100%; min-height: 100vh; align-items: center; justify-content: center; padding: 1rem; }
-        .page.active { display: flex; }
-        .glass-card, .role-glass-card { background: rgba(255,255,255,0.95); border-radius: 40px; padding: 2rem; max-width: 450px; width: 100%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
-        .role-buttons, .action-buttons { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
-        .role-btn, .btn-primary, .btn-secondary { padding: 1rem; border-radius: 12px; font-weight: 600; border: none; cursor: pointer; font-size: 1rem; transition: all 0.2s; }
-        .student-btn { background: linear-gradient(135deg,#f59e0b,#3b82f6); color: white; }
-        .staff-btn { background: transparent; border: 2px solid #3b82f6; color: #3b82f6; }
-        .btn-primary { background: linear-gradient(135deg,#f59e0b,#3b82f6); color: white; width: 100%; }
-        .btn-secondary { background: transparent; border: 2px solid #3b82f6; color: #3b82f6; width: 100%; }
-        .input-group { position: relative; margin-bottom: 1rem; }
-        .input-group i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af; }
-        .form-input { width: 100%; padding: 0.75rem 1rem 0.75rem 3rem; border: 1px solid #e2e8f0; border-radius: 12px; }
-        .form-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
-        .form-group { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
-        .form-group input, .form-group select, .form-group textarea { padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 12px; width: 100%; }
-        .form-divider { height: 2px; background: linear-gradient(135deg,#f59e0b,#3b82f6); margin: 1.5rem 0; }
-        .dashboard-container { display: flex; min-height: 100vh; width: 100%; }
-        .sidebar { width: 280px; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.05); position: fixed; height: 100vh; overflow-y: auto; transition: 0.3s; z-index: 100; }
-        .sidebar.collapsed { width: 80px; }
-        .sidebar.collapsed .sidebar-logo-text, .sidebar.collapsed .nav-item span { display: none; }
-        .sidebar-header { padding: 1.5rem; text-align: center; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        .sidebar-logo-img { width: 32px; height: 32px; object-fit: contain; }
-        .sidebar-logo-text { font-weight: 800; background: linear-gradient(135deg,#f59e0b,#3b82f6); -webkit-background-clip-: text; -webkit-text-fill-color: transparent; }
-        .sidebar-nav { padding: 1rem; }
-        .nav-item { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; cursor: pointer; border-radius: 12px; color: #4a5568; margin-bottom: 0.5rem; }
-        .nav-item:hover { background: rgba(245,158,11,0.1); color: #f59e0b; }
-        .nav-item.active { background: linear-gradient(135deg,#f59e0b,#3b82f6); color: white; }
-        .main-content { flex: 1; margin-left: 280px; padding: 1.5rem; background: #f1f5f9; min-height: 100vh; }
-        .top-navbar { background: white; padding: 1rem 1.5rem; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .nav-right { display: flex; align-items: center; gap: 1rem; }
-        .notification-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; position: relative; color: #4a5568; }
-        .notification-btn:hover { color: #f59e0b; }
-        .notification-badge { position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid #f59e0b; }
-        .profile-menu { position: relative; }
-        .profile-dropdown { position: absolute; top: 55px; right: 0; width: 280px; background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); display: none; z-index: 1000; }
-        .profile-dropdown.show { display: block; }
-        .dropdown-header { padding: 1rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid #f0f0f0; }
-        .dropdown-avatar { width: 50px; height: 50px; border-radius: 50%; }
-        .dropdown-info { padding: 0.75rem 1rem; }
-        .dropdown-info p { font-size: 0.75rem; margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; }
-        .dropdown-divider { height: 1px; background: #f0f0f0; margin: 0.5rem 0; }
-        .dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; cursor: pointer; transition: background 0.3s; }
-        .dropdown-item:hover { background: #f7fafc; }
-        .logout-item { color: #ef4444; }
-        .welcome-banner { background: linear-gradient(135deg, #f59e0b, #3b82f6); border-radius: 20px; padding: 1.5rem; color: white; margin-bottom: 2rem; }
-        .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: white; padding: 1.5rem; border-radius: 20px; text-align: center; }
-        .stat-card i { font-size: 2rem; background: linear-gradient(135deg,#f59e0b,#3b82f6); -webkit-background-clip-: text; -webkit-text-fill-color: transparent; }
-        .stat-card h3 { font-size: 1.8rem; }
-        .dashboard-card { background: white; border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem; }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
-        .dashboard-card.full-width { grid-column: span 2; }
-        .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-        .action-btn { background: #f9fafb; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; font-family: 'Poppins', sans-serif; transition: all 0.2s; }
-        .action-btn:hover { background: #e2e8f0; transform: translateY(-2px); }
-        .action-btn i { font-size: 1.5rem; background: linear-gradient(135deg,#f59e0b,#3b82f6); -webkit-background-clip-: text; -webkit-text-fill-color: transparent; }
-        .document-list, .activity-timeline { display: flex; flex-direction: column; gap: 1rem; }
-        .document-item, .activity-item { display: flex; align-items: center; gap: 1rem; padding: 0.75rem; border-radius: 12px; background: #f9fafb; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        .status-badge { padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-        .status-pending { background: #fef3c7; color: #d97706; }
-        .status-completed { background: #d1fae5; color: #059669; }
-        .action-buttons { display: flex; gap: 0.5rem; }
-        .btn-approve { background: #10b981; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; }
-        .btn-reject { background: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; }
-        .staff-sidebar { background: linear-gradient(180deg,#1e293b,#0f172a); color: white; }
-        .staff-sidebar .nav-item { color: #cbd5e1; }
-        .staff-sidebar .nav-item.active, .staff-sidebar .nav-item:hover { background: rgba(59,130,246,0.2); color: white; }
-        @media (max-width: 768px) { .sidebar, .staff-sidebar { transform: translateX(-100%); } .sidebar.open, .staff-sidebar.open { transform: translateX(0); } .main-content { margin-left: 0; } .form-row { flex-direction: column; } .dashboard-grid { grid-template-columns: 1fr; } .dashboard-card.full-width { grid-column: span 1; } }
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-        .modal-content { background: white; border-radius: 20px; padding: 2rem; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1rem; }
-        .modal-close { cursor: pointer; font-size: 1.5rem; }
-        .modal-buttons { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem; }
-        .logo-image { width: 64px; margin: 0 auto; display: block; }
-        .settings-container { display: flex; max-width: 1200px; margin: 2rem auto; background: white; border-radius: 24px; overflow: hidden; min-height: 80vh; }
-        .settings-sidebar { width: 280px; background: #f8fafc; padding: 1.5rem; border-right: 1px solid #e2e8f0; }
-        .settings-content { flex: 1; padding: 2rem; overflow-y: auto; }
-        .settings-tab { display: none; }
-        .settings-tab.active { display: block; }
-        .settings-nav-btn { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; background: none; border: none; cursor: pointer; width: 100%; border-radius: 12px; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif; }
-        .settings-nav-btn.active { background: linear-gradient(135deg,#f59e0b,#3b82f6); color: white; }
-        .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8fafc; border-radius: 16px; margin-bottom: 1rem; }
-        .settings-btn { background: linear-gradient(135deg,#f59e0b,#3b82f6); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; }
-        .history-item, .notification-item { padding: 1rem; border-left: 3px solid #f59e0b; background: #f8fafc; border-radius: 12px; margin-bottom: 1rem; }
-        .conditional-field { display: none; }
-        .conditional-field.show { display: block; }
-        /* Staff specific tables */
-        .staff-stats { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
-        .staff-stat-card { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 1rem; border-radius: 16px; flex: 1; text-align: center; }
-        .staff-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
-        .staff-action-btn { padding: 0.5rem 1rem; border-radius: 8px; border: none; cursor: pointer; background: #e2e8f0; }
-        .staff-requests-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        .staff-requests-table th, .staff-requests-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        .feedback-table { width: 100%; border-collapse: collapse; }
-        .feedback-table th, .feedback-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-<!-- ========== ROLE SELECTION ========== -->
-<div id="roleSelectionPage" class="page active">
-    <div class="role-glass-card">
-        <div class="mb-6">
-            <img src="img/transakto.png" alt="Logo" class="logo-image" onerror="this.src='https://via.placeholder.com/64?text=BU'">
-            <h1 style="font-weight: 700; font-size: 1.8rem;">BU TRANSAKTO</h1>
-            <p>Document Request Management System</p>
-        </div>
-        <div class="role-buttons">
-            <button id="studentRoleBtn" class="role-btn student-btn"><i class="fas fa-user-graduate"></i> Student Portal</button>
-            <button id="staffRoleBtn" class="role-btn staff-btn"><i class="fas fa-chalkboard-user"></i> Staff Portal</button>
-        </div>
-    </div>
-</div>
-
-<!-- ========== ACTION CHOICE ========== -->
-<div id="actionChoicePage" class="page">
-    <div class="glass-card">
-        <h1><i class="fas fa-user-circle"></i> Welcome, <span id="actionRoleDisplay"></span></h1>
-        <p>Choose an action</p>
-        <div class="action-buttons">
-            <button class="btn-primary" onclick="goToRegister()"><i class="fas fa-user-plus"></i> Register New Account</button>
-            <button class="btn-secondary" onclick="goToLogin()"><i class="fas fa-sign-in-alt"></i> Login to Existing Account</button>
-        </div>
-        <p style="margin-top:1rem;"><a href="#" onclick="backToRoleSelection()">← Back to Role Selection</a></p>
-    </div>
-</div>
-
-<!-- ========== REGISTRATION ========== -->
-<div id="studentInfoContainer" class="page">
-    <div class="student-info-card" style="background:white; border-radius:30px; padding:2rem; max-width:600px; width:100%;">
-        <div class="student-info-header"><i class="fas fa-user-graduate"></i><h2>STUDENTS INFORMATION</h2><p>Please fill out all information</p></div>
-        <form id="studentInfoForm">
-            <div class="form-group"><label>Full Name:</label><input type="text" id="fullName" required></div>
-            <div class="form-group"><label>Student Number:</label><input type="text" id="studentNumber" required></div>
-            <div class="form-group"><label>Course/Program:</label><input type="text" id="course" required></div>
-            <div class="form-group"><label>Year Level & Block:</label><input type="text" id="yearBlock" required></div>
-            <div class="form-group"><label>Contact Number:</label><input type="tel" id="contactNumber" required></div>
-            <div class="form-group"><label>Personal E-mail:</label><input type="email" id="personalEmail" required></div>
-            <div class="form-group"><label>Complete Address:</label><textarea id="address" rows="3" required></textarea></div>
-            <div class="form-divider"></div>
-            <div class="form-group"><label>Account Email (for login):</label><input type="email" id="accountEmail" required></div>
-            <div class="form-group"><label>Account Password:</label><input type="password" id="accountPassword" required></div>
-            <button type="submit" class="save-btn btn-primary"><i class="fas fa-save"></i> REGISTER & SAVE</button>
-        </form>
-    </div>
-</div>
-
-<!-- ========== LOGIN ========== -->
-<div id="signinContainer" class="page">
-    <div class="glass-card">
-        <img src="img/transakto.png" class="logo-image" style="width:64px; margin:0 auto 1rem;" onerror="this.src='https://via.placeholder.com/64?text=BU'">
-        <h1 class="signin-title">Sign in with email</h1>
-        <p class="signin-subtitle">Welcome to BU Transakto</p>
-        <form id="loginForm">
-            <div class="input-group"><i class="far fa-envelope"></i><input type="email" id="email" class="form-input" placeholder="Email" required></div>
-            <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="password" class="form-input" placeholder="Password" required><i class="far fa-eye-slash password-toggle" id="togglePassword"></i></div>
-            <button type="submit" class="btn-primary">Log In</button>
-        </form>
-        <p style="margin-top:1rem;"><a href="#" onclick="backToRoleSelection()">← Back to Role Selection</a></p>
-    </div>
-</div>
-
-<!-- ========== STUDENT DASHBOARD ========== -->
-<div id="homepage" class="page">
-    <div class="dashboard-container">
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header"><img src="transakto.png" class="sidebar-logo-img" onerror="this.src='https://via.placeholder.com/32'"><span class="sidebar-logo-text">TRANSAKTO</span></div>
-            <div class="sidebar-nav">
-                <a href="#" class="nav-item active" data-page="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
-                <a href="#" class="nav-item" data-page="request"><i class="fas fa-file-alt"></i><span>Request Document</span></a>
-                <a href="#" class="nav-item" data-page="status"><i class="fas fa-paper-plane"></i><span>Request Status</span></a>
-                <a href="#" class="nav-item" data-page="history"><i class="fas fa-history"></i><span>History</span></a>
-                <a href="#" class="nav-item" data-page="notifications"><i class="fas fa-bell"></i><span>Notifications</span></a>
-                <a href="#" class="nav-item" data-page="settings"><i class="fas fa-cog"></i><span>Settings</span></a>
+    
+    <!-- ==================== LANDING PAGE ==================== -->
+    <div class="page landing-page" id="landingPage">
+        <div class="landing-content">
+            <div class="landing-card">
+                <div class="landing-logo">
+                    <img src="img/transakto1.png" alt="BU Logo">
+                </div>
+                <p class="university-name">Bicol University</p>
+                <h1 style="color: #ffffff;">BU TRANSAKTO</h1>
+                <p class="system-desc">Registrar Document Request Management System<br>Polangui Campus</p>
+                
+                <div class="role-selection">
+                    <button class="role-btn role-student" id="studentRoleBtn">
+                        <div class="role-icon"><i class="fas fa-user-graduate"></i></div>
+                        <div class="role-text">
+                            <span class="role-title">Student Portal</span>
+                            <span class="role-desc">Request documents & track status</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    
+                    <button class="role-btn role-staff" id="staffRoleBtn">
+                        <div class="role-icon"><i class="fas fa-user-tie"></i></div>
+                        <div class="role-text">
+                            <span class="role-title">Staff Portal</span>
+                            <span class="role-desc">Manage requests & students</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="landing-divider">or</div>
+                
+                <button class="btn btn-secondary" id="registerBtn" style="font-size:var(--text-sm);">
+                    <i class="fas fa-user-plus"></i> Register New Student Account
+                </button>
             </div>
         </div>
-        <div class="main-content">
-            <div class="top-navbar">
-                <button id="sidebarToggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
-                <div class="nav-right">
-                    <button id="notificationIconBtn" class="notification-btn"><i class="fas fa-bell"></i><span id="notificationBadge" class="notification-badge">0</span></button>
-                    <div class="profile-menu">
-                        <button id="profileBtn" class="profile-btn" style="background:none; border:none;">
-                            <img id="profileAvatar" class="user-avatar" src="https://ui-avatars.com/api/?background=f59e0b&color=fff&rounded=true&bold=true&size=40&name=U" style="cursor:pointer;">
+    </div>
+
+    <!-- ==================== LOGIN PAGE ==================== -->
+<div class="page auth-page hidden" id="authPage">
+    <div class="auth-container">
+        <div class="auth-header">
+            <!-- ✅ LOGO INSIDE THE CARD HEADER -->
+            <div class="auth-logo">
+                <img src="img/transakto1.png" alt="BU Logo">
+            </div>
+            <h2 id="authTitle">Sign In</h2>
+            <p id="authSubtitle">Welcome back to BU Transakto</p>
+        </div>
+        <div class="auth-body">
+            <a class="back-link" id="backToRoleBtn">
+                <i class="fas fa-arrow-left"></i> Back to role selection
+            </a>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" class="form-input" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required>
+                        <button type="button" class="password-toggle">
+                            <i class="far fa-eye"></i>
                         </button>
-                        <div id="profileDropdown" class="profile-dropdown">
-                            <div class="dropdown-header"><img id="dropdownAvatar" src="https://ui-avatars.com/api/?background=f59e0b&color=fff&rounded=true&bold=true&size=50&name=U" class="dropdown-avatar"><div><h4 id="profileName">Student Name</h4><p id="profileStudentNumber">Student Number</p></div></div>
-                            <div class="dropdown-info"><p><i class="fas fa-graduation-cap"></i> <span id="profileCourse">Course</span></p><p><i class="fas fa-calendar-alt"></i> <span id="profileYearBlock">Year & Block</span></p><p><i class="fas fa-phone"></i> <span id="profileContact">Contact</span></p><p><i class="fas fa-envelope"></i> <span id="profilePersonalEmail">Personal Email</span></p><p><i class="fas fa-map-marker-alt"></i> <span id="profileAddress">Address</span></p><p><i class="fas fa-envelope"></i> <span id="profileAccountEmail">Account Email</span></p></div>
-                            <div class="dropdown-divider"></div>
-                            <div class="dropdown-item" id="settingsDropdownBtn"><i class="fas fa-cog"></i> Settings</div>
-                            <div class="dropdown-item logout-item" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Logout</div>
-                        </div>
                     </div>
                 </div>
-            </div>
-            <div id="dashboardContent">
-                <div id="dashboardSection" class="dashboard-section">
-                    <div class="welcome-banner"><h2>Welcome back, <span id="welcomeName">Student</span>!</h2><p>Manage your documents and requests seamlessly with BU Transakto</p></div>
-                    <div class="stats-container"><div class="stat-card"><i class="fas fa-file-alt"></i><h3 id="totalRequests">0</h3><p>Total Documents</p></div><div class="stat-card"><i class="fas fa-clock"></i><h3 id="pendingRequests">0</h3><p>Pending Requests</p></div><div class="stat-card"><i class="fas fa-check-circle"></i><h3 id="completedRequests">0</h3><p>Completed</p></div><div class="stat-card"><i class="fas fa-user-graduate"></i><h3 id="welcomeNameSmall">Student</h3><p>Status: Active</p></div></div>
-                    <div class="dashboard-grid">
-                        <div class="dashboard-card"><div class="card-header"><h3>Recent Documents</h3></div><div class="document-list" id="recentDocsList"><div class="document-item"><i class="fas fa-file-pdf"></i><div><h4>No documents yet</h4><p>Upload your first document</p></div></div></div></div>
-                        <div class="dashboard-card"><div class="card-header"><h3>Quick Actions</h3></div><div class="quick-actions"><button class="action-btn" onclick="showRequestSection()"><i class="fas fa-paper-plane"></i><span>Request Document</span></button><button class="action-btn" onclick="window.open('feedback.html', '_blank')"><i class="fas fa-star"></i><span>Submit Feedback</span></button><button class="action-btn" onclick="window.openSupport()"><i class="fas fa-envelope"></i><span>Support</span></button></div></div>
-                        <div class="dashboard-card full-width"><div class="card-header"><h3>Recent Activity</h3></div><div class="activity-timeline" id="activityTimeline"><div class="activity-item"><i class="fas fa-user-plus"></i><div><p>Welcome to BU Transakto!</p><span>Complete your profile to get started</span></div></div></div></div>
-                    </div>
-                </div>
-                <!-- REQUEST DOCUMENT SECTION (FULL) -->
-                <div id="requestSection" class="dashboard-section" style="display:none;">
-                    <div class="dashboard-card">
-                        <h2>Request a Document</h2>
-                        <form id="documentRequestFormNew">
-                            <div class="form-group"><label>Document Type *</label><select id="reqDocType" required><option value="">Select Document Type</option><option value="Certificate of Grades">Certificate of Grades</option><option value="Certificate of Registration">Certificate of Registration</option><option value="Transcript of Records (TOR)">Transcript of Records (TOR)</option><option value="Good Moral Certificate">Good Moral Certificate</option><option value="Others">Others</option></select></div>
-                            <div id="reqSpecifyDocumentGroup" class="conditional-field"><div class="form-group"><label>Please specify document *</label><input type="text" id="reqSpecifyDoc" placeholder="Enter document name"></div></div>
-                            <div id="reqSemesterGroup" class="conditional-field"><div class="form-group"><label>Semester & Year *</label><input type="text" id="reqSemester" placeholder="e.g., 1st Semester 2024-2025"></div></div>
-                            <div class="form-group"><label>Purpose *</label><select id="reqPurpose" required><option value="">Select Purpose</option><option value="Employment">Employment</option><option value="Transfer">Transfer to another school</option><option value="Scholarship">Scholarship Application</option><option value="Personal">Personal Records</option><option value="Government Requirement">Government Requirement</option></select></div>
-                            <div class="form-group"><label>Number of Copies *</label><input type="number" id="reqQuantity" min="1" max="10" value="1" required></div>
-                            <div class="form-group"><label>Additional Notes (Optional)</label><textarea id="reqNotes" rows="3" placeholder="Any additional information..."></textarea></div>
-                            <button type="submit" class="btn-primary">Submit Request</button>
-                            <div id="reqSuccessMessage" style="color:green; margin-top:1rem; display:none;"></div>
-                        </form>
-                    </div>
-                </div>
-                <div id="statusSection" class="dashboard-section" style="display:none;"><div class="dashboard-card"><h2>Request Status</h2><div id="requestsTableBody">Loading...</div></div></div>
-                <div id="historySection" class="dashboard-section" style="display:none;"><div class="dashboard-card"><h2>Transaction History</h2><div id="historyTimeline"></div></div></div>
-                <div id="notificationsSection" class="dashboard-section" style="display:none;"><div class="dashboard-card"><h2>Notifications</h2><div id="notificationsList"></div></div></div>
-                <div id="settingsSection" class="dashboard-section" style="display:none;"><div class="dashboard-card"><h2>Settings</h2><button class="btn-secondary" onclick="openSettingsPage()">Open Settings Page</button></div></div>
-            </div>
+                <button type="submit" class="btn btn-primary mt-3">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+            
+            <p class="text-center mt-3" style="font-size:var(--text-sm);">
+                Don't have an account? 
+                <a href="#" id="showRegisterBtn" style="color:var(--primary);font-weight:var(--font-medium);">Register here</a>
+            </p>
+        </div>
+        <div class="auth-footer">
+            <p>Bicol University - Polangui Campus</p>
         </div>
     </div>
 </div>
 
-<!-- ========== STAFF DASHBOARD (with Feedback instead of Settings) ========== -->
-<div id="staffDashboard" class="page">
-    <div class="dashboard-container">
-        <div class="sidebar staff-sidebar" id="staffSidebar">
-            <div class="sidebar-header"><i class="fas fa-chalkboard-user"></i><span class="sidebar-logo-text">Staff Portal</span></div>
-            <div class="sidebar-nav">
-                <div class="nav-item active" data-staff-section="dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
-                <div class="nav-item" data-staff-section="requests"><i class="fas fa-file-alt"></i><span>All Requests</span></div>
-                <div class="nav-item" data-staff-section="students"><i class="fas fa-users"></i><span>Students</span></div>
-                <div class="nav-item" data-staff-section="feedback"><i class="fas fa-comment-dots"></i><span>Feedback</span></div>
+    <!-- ==================== REGISTER PAGE ==================== -->
+    <div class="page register-page hidden" id="registerPage">
+        <div class="register-container">
+            <div class="register-header">
+                <h2>Student Registration</h2>
+                <p>Create your BU Transakto student account</p>
             </div>
-        </div>
-        <div class="main-content">
-            <!-- Top bar with notification and profile -->
-            <div class="top-navbar">
-                <button id="staffSidebarToggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
-                <div class="nav-right">
-                    <button id="staffNotificationBtn" class="notification-btn"><i class="fas fa-bell"></i><span id="staffNotificationBadge" class="notification-badge">0</span></button>
-                    <div class="profile-menu">
-                        <button id="staffProfileBtn" class="profile-btn" style="background:none; border:none;">
-                            <img id="staffProfileAvatar" class="user-avatar" src="https://ui-avatars.com/api/?background=f59e0b&color=fff&rounded=true&bold=true&size=40&name=Admin" style="cursor:pointer;">
-                        </button>
-                        <div id="staffProfileDropdown" class="profile-dropdown">
-                            <div class="dropdown-header"><img id="staffDropdownAvatar" src="https://ui-avatars.com/api/?background=f59e0b&color=fff&rounded=true&bold=true&size=50&name=Admin" class="dropdown-avatar"><div><h4 id="staffProfileName">Admin User</h4><p id="staffProfileEmail">admin@bu.edu.ph</p></div></div>
-                            <div class="dropdown-divider"></div>
-                            <div class="dropdown-info"><p><i class="fas fa-envelope"></i> admin@bu.edu.ph</p></div>
-                            <div class="dropdown-divider"></div>
-                            <div class="dropdown-item logout-item" id="staffLogoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            <div class="register-body">
+                <a class="back-link" id="showLoginBtn">
+                    <i class="fas fa-arrow-left"></i> Already have an account? Sign in
+                </a>
+                
+                <form id="registerForm">
+                    <div class="form-section">
+                        <div class="form-section-title">Personal Information</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name <span class="required">*</span></label>
+                                <input type="text" class="form-input" id="regFullName" placeholder="Last Name, First Name MI" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Student Number <span class="required">*</span></label>
+                                <input type="text" class="form-input" id="regStudentId" placeholder="e.g., 2024-0001" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Course/Program <span class="required">*</span></label>
+                                <input type="text" class="form-input" id="regCourse" placeholder="e.g., BS Information Technology" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Year Level <span class="required">*</span></label>
+                                <input type="text" class="form-input" id="regYearLevel" placeholder="e.g., 2nd Year" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Contact Number</label>
+                                <input type="tel" class="form-input" id="regContact" placeholder="09XXXXXXXXX">
+                            </div>
+                            <div class="form-group">
+                                <label>Personal Email</label>
+                                <input type="email" class="form-input" id="regPersonalEmail" placeholder="your@email.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Complete Address</label>
+                            <textarea class="form-input" id="regAddress" rows="2" placeholder="Your complete address"></textarea>
                         </div>
                     </div>
-                </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title">Account Credentials</div>
+                        <div class="form-group">
+                            <label>Account Email <span class="required">*</span></label>
+                            <input type="email" class="form-input" id="regEmail" placeholder="Enter email for login" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password <span class="required">*</span></label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" class="form-input" id="regPassword" placeholder="Min. 6 characters" required minlength="6">
+                                <button type="button" class="password-toggle">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                </form>
             </div>
-            <div id="staffDashboardContent">
-                <!-- Staff Dashboard Section (stats only) -->
-                <div id="staffDashboardSection" class="staff-section">
-                    <div class="staff-stats">
-                        <div class="staff-stat-card"><h3 id="staffTotalRequests">0</h3><p>Total Requests</p></div>
-                        <div class="staff-stat-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);"><h3 id="staffPendingRequests">0</h3><p>Pending</p></div>
-                        <div class="staff-stat-card" style="background: linear-gradient(135deg, #16a34a, #15803d);"><h3 id="staffCompletedRequests">0</h3><p>Completed</p></div>
-                    </div>
-                </div>
-                <!-- Staff All Requests Section (detailed view) -->
-                <div id="staffRequestsSection" class="staff-section" style="display:none;">
-                    <div class="dashboard-card">
-                        <h2>All Document Requests</h2>
-                        <div class="staff-actions">
-                            <button class="staff-action-btn" data-filter="all" onclick="filterStaffRequests('all')">All</button>
-                            <button class="staff-action-btn" data-filter="pending" onclick="filterStaffRequests('pending')">Pending</button>
-                            <button class="staff-action-btn" data-filter="completed" onclick="filterStaffRequests('completed')">Completed</button>
-                            <button class="staff-action-btn" data-filter="rejected" onclick="filterStaffRequests('rejected')">Rejected</button>
-                        </div>
-                        <div style="overflow-x: auto;">
-                            <table class="staff-requests-table">
-                                <thead><tr><th>ID</th><th>Student</th><th>Document</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
-                                <tbody id="staffAllRequestsTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- Staff Students Section -->
-                <div id="staffStudentsSection" class="staff-section" style="display:none;">
-                    <div class="dashboard-card">
-                        <h2>Registered Students & Their Requests</h2>
-                        <div style="overflow-x: auto;">
-                            <table class="staff-requests-table">
-                                <thead><tr><th>Student Name</th><th>Student #</th><th>Course</th><th>Email</th><th>Documents Requested</th></tr></thead>
-                                <tbody id="staffStudentsTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- Staff Feedback Section -->
-                <div id="staffFeedbackSection" class="staff-section" style="display:none;">
-                    <div class="dashboard-card">
-                        <h2>Student Feedback</h2>
-                        <div style="overflow-x: auto;">
-                            <table class="feedback-table">
-                                <thead><tr><th>User</th><th>Rating</th><th>Category</th><th>Message</th><th>Emoji</th><th>Date</th></tr></thead>
-                                <tbody id="staffFeedbackTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+            <div class="auth-footer">
+                <p>Bicol University - Polangui Campus</p>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ========== NOTIFICATIONS MODAL FOR STAFF ========== -->
-<div id="staffNotificationsModal" class="modal">
-    <div class="modal-content" style="max-width: 500px;">
-        <div class="modal-header">
-            <h2><i class="fas fa-bell"></i> Notifications</h2>
-            <span class="modal-close" onclick="closeStaffNotificationsModal()">&times;</span>
-        </div>
-        <div id="staffNotificationsList" style="max-height: 400px; overflow-y: auto;">
-            <!-- Notifications will be loaded here -->
-        </div>
-    </div>
-</div>
-
-<!-- ========== SETTINGS PAGE (student) ========== -->
-<div id="settingsPage" class="page">
-    <div class="settings-container">
-        <div class="settings-sidebar">
-            <div class="settings-sidebar-header"><button id="settingsBackBtn" class="settings-back-nav-btn" style="margin-bottom:1rem;"><i class="fas fa-arrow-left"></i> Back to Home</button><div class="settings-logo"><i class="fas fa-cog"></i><h3>Settings</h3></div></div>
-            <div class="settings-sidebar-nav">
-                <button class="settings-nav-btn active" data-settings-tab="general"><i class="fas fa-sliders-h"></i> General Settings</button>
-                <button class="settings-nav-btn" data-settings-tab="account"><i class="fas fa-user-circle"></i> Account Settings</button>
-                <button class="settings-nav-btn" data-settings-tab="privacy"><i class="fas fa-shield-alt"></i> Privacy & Security</button>
+        <!-- ==================== STAFF REGISTER PAGE ==================== -->
+    <div class="page register-page hidden" id="staffRegisterPage">
+        <div class="register-container">
+            <div class="register-header" style="background: linear-gradient(135deg, #1e293b, #334155);">
+                <h2>Staff Registration</h2>
+                <p>Create your staff account for BU Transakto</p>
             </div>
-        </div>
-        <div class="settings-content">
-            <div id="settings-general" class="settings-tab active">
-                <h2>General Settings</h2>
-                <div class="settings-group">
-                    <div class="settings-item"><div class="settings-item-info"><i class="fas fa-moon"></i><div><h4>Dark Mode</h4><p>Switch between light and dark theme</p></div></div><label class="switch"><input type="checkbox" id="darkModeToggle"><span class="slider round"></span></label></div>
-                    <div class="settings-item"><div class="settings-item-info"><i class="fas fa-bell"></i><div><h4>Notifications</h4><p>Receive updates about your documents</p></div></div><label class="switch"><input type="checkbox" id="notificationToggle" checked><span class="slider round"></span></label></div>
-                    <div class="settings-item"><div class="settings-item-info"><i class="fas fa-language"></i><div><h4>Language</h4><p>Choose your preferred language</p></div></div><select id="languageSelect" class="settings-select"><option value="english">English</option><option value="filipino">Filipino</option><option value="spanish">Spanish</option></select></div>
-                </div>
-            </div>
-            <div id="settings-account" class="settings-tab">
-                <h2>Account Settings</h2>
-                <div class="settings-group">
-                    <div class="settings-item"><div class="settings-item-info"><i class="fas fa-user"></i><div><h4>Profile & Contact Information</h4><p>Update your personal and contact details</p></div></div><button class="settings-btn" onclick="openProfileEditModal()">Edit</button></div>
-                    <div class="settings-item"><div class="settings-item-info"><i class="fas fa-history"></i><div><h4>Transaction History</h4><p>View all your transactions</p></div></div><button class="settings-btn" onclick="viewTransactionHistory()">View</button></div>
-                </div>
-            </div>
-            <div id="settings-privacy" class="settings-tab">
-                <h2>Privacy & Security</h2>
-                <div class="settings-group">
-                    <div class="settings-item"><div class="settings-item-info"><i class="fas fa-key"></i><div><h4>Change Password</h4><p>Update your account password</p></div></div><button class="settings-btn" onclick="openChangePasswordModal()">Change</button></div>
-                    <div class="settings-item"><div class="settings-item-info"><i class="fas fa-sign-in-alt"></i><div><h4>Login History</h4><p>View your recent login activities</p></div></div><button class="settings-btn" onclick="viewLoginHistory()">View</button></div>
-                    <div class="settings-item"><div class="settings-item-info"><i class="fas fa-laptop"></i><div><h4>Active Devices</h4><p>Manage devices connected to your account</p></div></div><button class="settings-btn" onclick="viewActiveDevices()">Manage</button></div>
-                    <div class="settings-item"><div class="settings-item-info"><i class="fas fa-sign-out-alt"></i><div><h4>Log Out From All Devices</h4><p>Sign out from every device</p></div></div><button class="settings-btn danger" onclick="logoutAllDevices()">Log Out All</button></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ========== MODALS (student only) ========== -->
-<div id="profileEditModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-edit"></i> Edit Profile</h2><span class="modal-close" onclick="closeProfileEditModal()">&times;</span></div><form id="profileEditForm"><div class="form-row"><div class="form-group"><label>Full Name</label><input type="text" id="editFullName"></div><div class="form-group"><label>Student Number</label><input type="text" id="editStudentNumber"></div></div><div class="form-row"><div class="form-group"><label>Course/Program</label><input type="text" id="editCourse"></div><div class="form-group"><label>Year Level & Block</label><input type="text" id="editYearBlock"></div></div><div class="form-row"><div class="form-group"><label>Contact Number</label><input type="tel" id="editContactNumber"></div><div class="form-group"><label>Personal Email</label><input type="email" id="editPersonalEmail"></div></div><div class="form-group"><label>Complete Address</label><textarea id="editAddress" rows="3"></textarea></div><div class="form-divider"></div><div class="form-row"><div class="form-group"><label>Account Email</label><input type="email" id="editAccountEmail"></div><div class="form-group"><label>New Password (optional)</label><input type="password" id="editNewPassword"></div></div><div class="modal-buttons"><button type="button" class="btn-secondary" onclick="closeProfileEditModal()">Cancel</button><button type="submit" class="btn-primary">Save Changes</button></div></form></div></div>
-
-<div id="changePasswordModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-key"></i> Change Password</h2><span class="modal-close" onclick="closeChangePasswordModal()">&times;</span></div><form id="changePasswordForm"><div class="form-group"><label>Current Password</label><input type="password" id="currentPassword" required></div><div class="form-group"><label>New Password</label><input type="password" id="newPassword" required></div><div class="form-group"><label>Confirm New Password</label><input type="password" id="confirmNewPassword" required></div><div class="modal-buttons"><button type="button" class="btn-secondary" onclick="closeChangePasswordModal()">Cancel</button><button type="submit" class="btn-primary">Update Password</button></div></form></div></div>
-
-<div id="avatarModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>Change Profile Picture</h3><span class="modal-close" onclick="closeAvatarModal()">&times;</span></div><input type="file" id="avatarUpload" accept="image/*"><div class="modal-buttons"><button class="btn-primary" onclick="uploadAvatar()">Upload</button><button class="btn-secondary" onclick="closeAvatarModal()">Cancel</button></div></div></div>
-
-<script>
-    // ========== GLOBALS ==========
-    let selectedRole = null;
-    let currentUser = null;
-    let allRequests = JSON.parse(localStorage.getItem('documentRequests')) || [];
-    let registeredStudents = JSON.parse(localStorage.getItem('registeredStudents')) || [];
-    let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
-    let loginHistory = JSON.parse(localStorage.getItem('loginHistory')) || [];
-    let currentStaffFilter = 'all';
-    let staffData = JSON.parse(localStorage.getItem('staffData')) || { name: 'Admin User', email: 'admin@bu.edu.ph', password: 'admin123' };
-
-    // ========== AVATAR & DROPDOWN (student) ==========
-    function openAvatarModal() { document.getElementById('avatarModal').style.display = 'flex'; }
-    function closeAvatarModal() { document.getElementById('avatarModal').style.display = 'none'; }
-    function uploadAvatar() {
-        const file = document.getElementById('avatarUpload').files[0];
-        if(file){ const reader = new FileReader(); reader.onload = e => { localStorage.setItem('userAvatar', e.target.result); updateAvatarDisplay(); closeAvatarModal(); }; reader.readAsDataURL(file); } else alert('Select an image');
-    }
-    function updateAvatarDisplay() {
-        const saved = localStorage.getItem('userAvatar');
-        const img = document.getElementById('profileAvatar');
-        const dropdownImg = document.getElementById('dropdownAvatar');
-        if(saved && img) img.src = saved;
-        if(saved && dropdownImg) dropdownImg.src = saved;
-        else if(img && currentUser) img.src = `https://ui-avatars.com/api/?background=f59e0b&color=fff&rounded=true&bold=true&size=40&name=${(currentUser.fullName||'U').charAt(0)}`;
-        if(dropdownImg && currentUser) dropdownImg.src = `https://ui-avatars.com/api/?background=f59e0b&color=fff&rounded=true&bold=true&size=50&name=${(currentUser.fullName||'U').charAt(0)}`;
-        // Staff avatar
-        const staffImg = document.getElementById('staffProfileAvatar');
-        const staffDropdownImg = document.getElementById('staffDropdownAvatar');
-        if(staffImg) staffImg.src = saved ? saved : `https://ui-avatars.com/api/?background=f59e0b&color=fff&rounded=true&bold=true&size=40&name=${(staffData.name||'A').charAt(0)}`;
-        if(staffDropdownImg) staffDropdownImg.src = saved ? saved : `https://ui-avatars.com/api/?background=f59e0b&color=fff&rounded=true&bold=true&size=50&name=${(staffData.name||'A').charAt(0)}`;
-    }
-    const profileBtn = document.getElementById('profileBtn');
-    const profileDropdown = document.getElementById('profileDropdown');
-    if(profileBtn && profileDropdown) {
-        profileBtn.addEventListener('click', (e) => { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
-        document.addEventListener('click', () => profileDropdown.classList.remove('show'));
-    }
-    document.getElementById('settingsDropdownBtn')?.addEventListener('click', () => { openSettingsPage(); profileDropdown.classList.remove('show'); });
-    document.getElementById('logoutDropdownBtn')?.addEventListener('click', () => { logout(); profileDropdown.classList.remove('show'); });
-
-    // Staff profile dropdown
-    const staffProfileBtn = document.getElementById('staffProfileBtn');
-    const staffProfileDropdown = document.getElementById('staffProfileDropdown');
-    if(staffProfileBtn && staffProfileDropdown) {
-        staffProfileBtn.addEventListener('click', (e) => { e.stopPropagation(); staffProfileDropdown.classList.toggle('show'); });
-        document.addEventListener('click', () => staffProfileDropdown.classList.remove('show'));
-    }
-    document.getElementById('staffLogoutDropdownBtn')?.addEventListener('click', () => { logout(); staffProfileDropdown.classList.remove('show'); });
-
-    // ========== NOTIFICATION ICON & MODAL (staff) ==========
-    function updateNotificationBadge() {
-        const unreadCount = notifications.filter(n => !n.read).length;
-        const badge = document.getElementById('notificationBadge');
-        if(badge) {
-            badge.textContent = unreadCount;
-            badge.style.display = unreadCount > 0 ? 'flex' : 'none';
-        }
-        const staffBadge = document.getElementById('staffNotificationBadge');
-        if(staffBadge) {
-            staffBadge.textContent = unreadCount;
-            staffBadge.style.display = unreadCount > 0 ? 'flex' : 'none';
-        }
-    }
-    function openStaffNotificationsModal() {
-        const modal = document.getElementById('staffNotificationsModal');
-        const container = document.getElementById('staffNotificationsList');
-        if (!container) return;
-        if (notifications.length === 0) {
-            container.innerHTML = '<div class="notification-item">No notifications</div>';
-        } else {
-            container.innerHTML = notifications.slice().reverse().map(n => `
-                <div class="notification-item ${n.read ? '' : 'unread'}">
-                    <div class="notification-icon ${n.type}"><i class="fas ${n.icon || 'fa-bell'}"></i></div>
-                    <div class="notification-content">
-                        <div class="notification-title">${n.title}</div>
-                        <div class="notification-message">${n.message}</div>
-                        <div class="notification-time">${n.time}</div>
+            <div class="register-body">
+                <a class="back-link" id="backToStaffLoginBtn">
+                    <i class="fas fa-arrow-left"></i> Back to staff login
+                </a>
+                
+                <form id="staffRegisterForm">
+                    <div class="form-section">
+                        <div class="form-section-title">Staff Information</div>
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" id="staffRegFullName" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address <span class="required">*</span></label>
+                            <input type="email" class="form-input" id="staffRegEmail" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Number <span class="required">*</span></label>
+                            <input type="tel" class="form-input" id="staffRegContact" placeholder="09XXXXXXXXX" required>
+                        </div>
                     </div>
-                </div>
-            `).join('');
-        }
-        modal.style.display = 'flex';
-    }
-    function closeStaffNotificationsModal() {
-        document.getElementById('staffNotificationsModal').style.display = 'none';
-    }
-    document.getElementById('staffNotificationBtn')?.addEventListener('click', openStaffNotificationsModal);
+                    
+                    <div class="form-section">
+                        <div class="form-section-title">Account Credentials</div>
+                        <div class="form-group">
+                            <label>Password <span class="required">*</span></label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" class="form-input" id="staffRegPassword" placeholder="Min. 6 characters" required minlength="6">
+                                <button type="button" class="password-toggle">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Create Staff Account
+                    </button>
+                </form>
+            </div>
+            <div class="auth-footer">
+                <p>Bicol University - Polangui Campus</p>
+            </div>
+        </div>
+    </div>
 
-    // Student notification bell (already existing)
-    document.getElementById('notificationIconBtn')?.addEventListener('click', () => {
-        document.querySelectorAll('.dashboard-section').forEach(sec => sec.style.display = 'none');
-        document.getElementById('notificationsSection').style.display = 'block';
-        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-        const notifNav = document.querySelector('.nav-item[data-page="notifications"]');
-        if(notifNav) notifNav.classList.add('active');
-    });
-
-    // ========== PAGE NAVIGATION ==========
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        if(pageId !== 'homepage' && pageId !== 'staffDashboard') {
-            document.querySelectorAll('.stats-container, .dashboard-card, .welcome-banner').forEach(el => el.style.display = 'none');
-        } else {
-            document.querySelectorAll('.stats-container, .dashboard-card, .welcome-banner').forEach(el => el.style.display = '');
-        }
-    }
-    function selectRole(role) { selectedRole = role; document.getElementById('actionRoleDisplay').innerText = (role==='student'?'Student':'Staff'); showPage('actionChoicePage'); }
-    function goToRegister() { if(selectedRole==='student') showPage('studentInfoContainer'); else alert('Staff registration by admin only'); }
-    function goToLogin() { showPage('signinContainer'); }
-    function backToRoleSelection() { selectedRole = null; showPage('roleSelectionPage'); }
-    function logout() { selectedRole = null; currentUser = null; showPage('roleSelectionPage'); }
-    function showRequestSection() { document.querySelectorAll('.dashboard-section').forEach(sec => sec.style.display = 'none'); document.getElementById('requestSection').style.display = 'block'; }
-    function openSettingsPage() { showPage('settingsPage'); }
-
-    // ========== SETTINGS FUNCTIONS (student) ==========
-    document.getElementById('settingsBackBtn')?.addEventListener('click', () => showPage('homepage'));
-    document.querySelectorAll('.settings-nav-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tab = btn.getAttribute('data-settings-tab');
-            document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(`settings-${tab}`).classList.add('active');
-            document.querySelectorAll('.settings-nav-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        });
-    });
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    if(localStorage.getItem('darkMode') === 'enabled') { document.body.classList.add('dark-mode'); darkModeToggle.checked = true; }
-    darkModeToggle.addEventListener('change', () => {
-        if(darkModeToggle.checked) { document.body.classList.add('dark-mode'); localStorage.setItem('darkMode', 'enabled'); }
-        else { document.body.classList.remove('dark-mode'); localStorage.setItem('darkMode', 'disabled'); }
-    });
-    const notifToggle = document.getElementById('notificationToggle');
-    if(localStorage.getItem('notificationsEnabled') !== 'false') notifToggle.checked = true;
-    notifToggle.addEventListener('change', () => localStorage.setItem('notificationsEnabled', notifToggle.checked));
-    const langSelect = document.getElementById('languageSelect');
-    langSelect.value = localStorage.getItem('language') || 'english';
-    langSelect.addEventListener('change', () => { localStorage.setItem('language', langSelect.value); alert('Language changed to ' + langSelect.value); });
-
-    // ========== PROFILE EDIT (student) ==========
-    function openProfileEditModal() {
-        if(!currentUser) return;
-        document.getElementById('editFullName').value = currentUser.fullName || '';
-        document.getElementById('editStudentNumber').value = currentUser.studentNumber || '';
-        document.getElementById('editCourse').value = currentUser.course || '';
-        document.getElementById('editYearBlock').value = currentUser.yearBlock || '';
-        document.getElementById('editContactNumber').value = currentUser.contactNumber || '';
-        document.getElementById('editPersonalEmail').value = currentUser.personalEmail || '';
-        document.getElementById('editAddress').value = currentUser.address || '';
-        document.getElementById('editAccountEmail').value = currentUser.accountEmail || '';
-        document.getElementById('editNewPassword').value = '';
-        document.getElementById('profileEditModal').style.display = 'flex';
-    }
-    function closeProfileEditModal() { document.getElementById('profileEditModal').style.display = 'none'; }
-    document.getElementById('profileEditForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if(!currentUser) return;
-        currentUser.fullName = document.getElementById('editFullName').value;
-        currentUser.studentNumber = document.getElementById('editStudentNumber').value;
-        currentUser.course = document.getElementById('editCourse').value;
-        currentUser.yearBlock = document.getElementById('editYearBlock').value;
-        currentUser.contactNumber = document.getElementById('editContactNumber').value;
-        currentUser.personalEmail = document.getElementById('editPersonalEmail').value;
-        currentUser.address = document.getElementById('editAddress').value;
-        currentUser.accountEmail = document.getElementById('editAccountEmail').value;
-        const newPwd = document.getElementById('editNewPassword').value;
-        if(newPwd) { if(newPwd.length>=6) currentUser.accountPassword = newPwd; else alert('Password min 6 chars'); }
-        const idx = registeredStudents.findIndex(s => s.id === currentUser.id);
-        if(idx !== -1) registeredStudents[idx] = currentUser;
-        localStorage.setItem('registeredStudents', JSON.stringify(registeredStudents));
-        loadStudentDashboard();
-        closeProfileEditModal();
-        alert('Profile updated');
-    });
-
-    function openChangePasswordModal() { document.getElementById('changePasswordModal').style.display = 'flex'; }
-    function closeChangePasswordModal() { document.getElementById('changePasswordModal').style.display = 'none'; }
-    document.getElementById('changePasswordForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if(!currentUser) return;
-        const cur = document.getElementById('currentPassword').value;
-        const newPwd = document.getElementById('newPassword').value;
-        const confirm = document.getElementById('confirmNewPassword').value;
-        if(cur !== currentUser.accountPassword) { alert('Current password incorrect'); return; }
-        if(newPwd.length < 6) { alert('New password min 6 chars'); return; }
-        if(newPwd !== confirm) { alert('Passwords do not match'); return; }
-        currentUser.accountPassword = newPwd;
-        const idx = registeredStudents.findIndex(s => s.id === currentUser.id);
-        if(idx !== -1) registeredStudents[idx] = currentUser;
-        localStorage.setItem('registeredStudents', JSON.stringify(registeredStudents));
-        closeChangePasswordModal();
-        alert('Password changed successfully');
-    });
-
-    function viewTransactionHistory() { showPage('homepage'); document.querySelector('.nav-item[data-page="history"]').click(); }
-    function viewLoginHistory() {
-        if(loginHistory.length === 0) alert('No login history yet.');
-        else { let msg = 'Recent Logins:\n'; loginHistory.slice(-5).reverse().forEach(log => msg += `${log.time} - ${log.device}\n`); alert(msg); }
-    }
-    function viewActiveDevices() { alert(`Current device:\n${navigator.userAgent}\n\nOther active devices: (simulated) None`); }
-    function logoutAllDevices() {
-        if(confirm('This will log you out from all devices. Continue?')) {
-            localStorage.removeItem('userAvatar'); localStorage.removeItem('documentRequests'); localStorage.removeItem('notifications');
-            localStorage.removeItem('loginHistory'); localStorage.removeItem('darkMode'); localStorage.removeItem('notificationsEnabled');
-            localStorage.removeItem('language'); localStorage.removeItem('staffData'); currentUser = null; selectedRole = null; showPage('roleSelectionPage'); alert('Logged out from all devices.');
-        }
-    }
-    function addLoginRecord() { loginHistory.push({ time: new Date().toLocaleString(), device: navigator.userAgent }); if(loginHistory.length>20) loginHistory.shift(); localStorage.setItem('loginHistory', JSON.stringify(loginHistory)); }
-
-    // ========== REGISTRATION ==========
-    document.getElementById('studentInfoForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        let newStudent = { id: Date.now(), fullName: document.getElementById('fullName').value, studentNumber: document.getElementById('studentNumber').value, course: document.getElementById('course').value, yearBlock: document.getElementById('yearBlock').value, contactNumber: document.getElementById('contactNumber').value, personalEmail: document.getElementById('personalEmail').value, address: document.getElementById('address').value, accountEmail: document.getElementById('accountEmail').value, accountPassword: document.getElementById('accountPassword').value, role: 'student' };
-        if(Object.values(newStudent).some(v => !v)) { alert('All fields required'); return; }
-        if(newStudent.accountPassword.length<6) { alert('Password min 6'); return; }
-        if(registeredStudents.find(s=>s.accountEmail===newStudent.accountEmail)) { alert('Email exists'); return; }
-        registeredStudents.push(newStudent);
-        localStorage.setItem('registeredStudents', JSON.stringify(registeredStudents));
-        alert('Registration successful! Please login.');
-        goToLogin();
-    });
-
-    // ========== LOGIN (unified) ==========
-    document.getElementById('loginForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const pwd = document.getElementById('password').value;
-        if(selectedRole === 'student') {
-            let user = registeredStudents.find(u => u.accountEmail === email && u.accountPassword === pwd);
-            if(user) {
-                currentUser = user;
-                addLoginRecord();
-                loadStudentDashboard();
-                showPage('homepage');
-            } else {
-                alert('Invalid student credentials');
-            }
-        } else if(selectedRole === 'staff') {
-            if(email === staffData.email && pwd === staffData.password) {
-                currentUser = { name: staffData.name, role: 'staff' };
-                addLoginRecord();
-                loadStaffDashboard();
-                showPage('staffDashboard');
-            } else {
-                alert('Invalid staff credentials');
-            }
-        } else {
-            alert('Please select a role first');
-        }
-    });
-
-    // ========== STUDENT DASHBOARD ==========
-    function loadStudentDashboard() {
-        document.getElementById('welcomeName').innerText = currentUser.fullName.split(' ')[0];
-        document.getElementById('welcomeNameSmall').innerText = currentUser.fullName.split(' ')[0];
-        updateAvatarDisplay();
-        document.getElementById('profileName').innerText = currentUser.fullName || 'Student Name';
-        document.getElementById('profileStudentNumber').innerText = currentUser.studentNumber || 'Student Number';
-        document.getElementById('profileCourse').innerText = currentUser.course || 'Course';
-        document.getElementById('profileYearBlock').innerText = currentUser.yearBlock || 'Year & Block';
-        document.getElementById('profileContact').innerText = currentUser.contactNumber || 'Contact';
-        document.getElementById('profilePersonalEmail').innerText = currentUser.personalEmail || 'Personal Email';
-        document.getElementById('profileAddress').innerText = currentUser.address || 'Address';
-        document.getElementById('profileAccountEmail').innerText = currentUser.accountEmail || 'Account Email';
-        let myReqs = allRequests.filter(r=>r.studentId===currentUser.id);
-        document.getElementById('totalRequests').innerText = myReqs.length;
-        document.getElementById('pendingRequests').innerText = myReqs.filter(r=>r.status==='pending').length;
-        document.getElementById('completedRequests').innerText = myReqs.filter(r=>r.status==='completed').length;
-        let docsHtml = myReqs.slice(-3).map(r=>`<div class="document-item"><i class="fas fa-file-alt"></i><div><h4>${r.documentType}</h4><p>${r.status}</p></div></div>`).join('');
-        if(docsHtml==='') docsHtml = '<div class="document-item"><i class="fas fa-file-pdf"></i><div><h4>No documents yet</h4><p>Upload your first document</p></div></div>';
-        document.getElementById('recentDocsList').innerHTML = docsHtml;
-        let activityHtml = myReqs.slice(-3).map(r=>`<div class="activity-item"><i class="fas fa-paper-plane"></i><div><p>Requested ${r.documentType}</p><span>${new Date(r.date).toLocaleDateString()}</span></div></div>`).join('');
-        if(activityHtml==='') activityHtml = '<div class="activity-item"><i class="fas fa-user-plus"></i><div><p>Welcome to BU Transakto!</p><span>Complete your profile to get started</span></div></div>';
-        document.getElementById('activityTimeline').innerHTML = activityHtml;
-        let statusHtml = `<table class="status-table"><thead><tr><th>Date</th><th>Document</th><th>Status</th></tr></thead><tbody>${myReqs.map(r=>`<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.documentType}</td><td class="status-badge status-${r.status}">${r.status}</td></tr>`).join('')}</tbody></tr>`;
-        document.getElementById('requestsTableBody').innerHTML = statusHtml;
-        document.getElementById('historyTimeline').innerHTML = myReqs.map(r=>`<div class="history-item"><strong>${r.documentType}</strong> - ${r.status}<br><small>${new Date(r.date).toLocaleString()}</small><p>${r.purpose}</p></div>`).join('') || '<div class="history-item">No history yet</div>';
-        document.getElementById('notificationsList').innerHTML = notifications.map(n=>`<div class="notification-item"><i class="fas ${n.icon}"></i> <strong>${n.title}</strong><br>${n.message}<br><small>${n.time}</small></div>`).join('') || '<div class="notification-item">No notifications</div>';
-        updateNotificationBadge();
-    }
-
-    // ========== STAFF DASHBOARD ==========
-    function loadStaffDashboard() {
-        updateStaffStats();
-        loadStaffAllRequestsTable();
-        loadStaffStudentsTable();
-        loadStaffFeedbackTable();
-        document.getElementById('staffProfileName').innerText = staffData.name;
-        document.getElementById('staffProfileEmail').innerText = staffData.email;
-        updateAvatarDisplay();
-        updateNotificationBadge(); // ensure badge shows correct count
-    }
-    function updateStaffStats() {
-        const total = allRequests.length;
-        const pending = allRequests.filter(r => r.status === 'pending').length;
-        const completed = allRequests.filter(r => r.status === 'completed').length;
-        document.getElementById('staffTotalRequests').innerText = total;
-        document.getElementById('staffPendingRequests').innerText = pending;
-        document.getElementById('staffCompletedRequests').innerText = completed;
-    }
-    function loadStaffAllRequestsTable() {
-        const tbody = document.getElementById('staffAllRequestsTableBody');
-        if (!tbody) return;
-        let filtered = allRequests;
-        if (currentStaffFilter !== 'all') filtered = allRequests.filter(r => r.status === currentStaffFilter);
-        if (filtered.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No requests found</td></tr>';
-            return;
-        }
-        tbody.innerHTML = filtered.map(r => {
-            let actions = '';
-            if (r.status !== 'completed') {
-                actions = `<button class="btn-approve" onclick="updateRequestStatus(${r.id}, 'completed')">Complete</button>
-                          <button class="btn-reject" onclick="updateRequestStatus(${r.id}, 'rejected')">Reject</button>`;
-            } else {
-                actions = '<span style="color:green;">No actions</span>';
-            }
-            return `
-                <tr>
-                    <td>${r.id}</td>
-                    <td>${r.studentName || 'Unknown'}</td>
-                    <td>${r.documentType}</td>
-                    <td>${new Date(r.date).toLocaleDateString()}</td>
-                    <td><span class="status-badge status-${r.status}">${r.status}</span></td>
-                    <td class="action-buttons">${actions}</td>
-                </tr>
-            `;
-        }).join('');
-    }
-    function loadStaffStudentsTable() {
-        const tbody = document.getElementById('staffStudentsTableBody');
-        if (!tbody) return;
-        if (registeredStudents.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5">No registered students</td></tr>';
-            return;
-        }
-        tbody.innerHTML = registeredStudents.map(s => {
-            const studentRequests = allRequests.filter(r => r.studentId === s.id);
-            const docs = studentRequests.map(r => `${r.documentType} (${r.status})`).join(', ') || 'No requests';
-            return `
-                <tr>
-                    <td>${s.fullName}</td>
-                    <td>${s.studentNumber}</td>
-                    <td>${s.course}</td>
-                    <td>${s.accountEmail}</td>
-                    <td>${docs}</td>
-                </tr>
-            `;
-        }).join('');
-    }
-    function loadStaffFeedbackTable() {
-        const tbody = document.getElementById('staffFeedbackTableBody');
-        if (!tbody) return;
-        const allFeedback = JSON.parse(localStorage.getItem('userFeedback')) || [];
-        if (allFeedback.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6">No feedback submitted yet</td></tr>';
-            return;
-        }
-        tbody.innerHTML = allFeedback.map(f => `
-            <tr>
-                <td>${f.user || 'Anonymous'}</td>
-                <td>${f.rating} ★</td>
-                <td>${f.category}</td>
-                <td>${f.message || '-'}</td>
-                <td>${f.emoji || '-'}</td>
-                <td>${f.date}</td>
-            </tr>
-        `).join('');
-    }
-    window.filterStaffRequests = function(filter) {
-        currentStaffFilter = filter;
-        loadStaffAllRequestsTable();
-        document.querySelectorAll('.staff-action-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if(btn.getAttribute('data-filter') === filter) btn.classList.add('active');
-        });
-    };
-    window.updateRequestStatus = function(id, newStatus) {
-        const req = allRequests.find(r => r.id === id);
-        if (req) {
-            req.status = newStatus;
-            req.dateUpdated = new Date().toLocaleString();
-            localStorage.setItem('documentRequests', JSON.stringify(allRequests));
-            updateStaffStats();
-            loadStaffAllRequestsTable();
-            loadStaffStudentsTable();
-            if (currentUser && currentUser.role === 'student') loadStudentDashboard();
-            alert(`Request #${id} marked as ${newStatus}`);
-        }
-    };
-
-    // ========== DOCUMENT REQUEST SUBMIT (student) ==========
-    document.getElementById('documentRequestFormNew')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        let docName = document.getElementById('reqDocType').value;
-        if(docName === 'Others') docName = document.getElementById('reqSpecifyDoc').value;
-        const semesterYear = document.getElementById('reqSemester')?.value || '';
-        const purpose = document.getElementById('reqPurpose').value;
-        const copies = document.getElementById('reqQuantity').value;
-        const notes = document.getElementById('reqNotes').value;
-        if(!docName || !purpose) { alert('Please fill all required fields'); return; }
-        const newReq = {
-            id: Date.now(),
-            studentId: currentUser.id,
-            studentName: currentUser.fullName,
-            studentNumber: currentUser.studentNumber,
-            documentType: docName,
-            semesterYear: semesterYear,
-            purpose: purpose,
-            copies: copies,
-            notes: notes,
-            status: 'pending',
-            date: new Date().toISOString()
-        };
-        allRequests.push(newReq);
-        localStorage.setItem('documentRequests', JSON.stringify(allRequests));
-        if(localStorage.getItem('notificationsEnabled') !== 'false') {
-            notifications.unshift({ id: Date.now(), title: 'Request Submitted', message: `${newReq.documentType} request submitted`, icon: 'fa-check-circle', time: new Date().toLocaleString(), read: false });
-            localStorage.setItem('notifications', JSON.stringify(notifications));
-        }
-        const successDiv = document.getElementById('reqSuccessMessage');
-        if(successDiv) { successDiv.innerHTML = '✅ Request submitted successfully!'; successDiv.style.display = 'block'; setTimeout(() => successDiv.style.display = 'none', 3000); }
-        alert('Request submitted');
-        loadStudentDashboard();
-        e.target.reset();
-        document.getElementById('reqSpecifyDocumentGroup')?.classList.remove('show');
-        document.getElementById('reqSemesterGroup')?.classList.remove('show');
-    });
-
-    // Conditional fields for document type
-    const reqDocType = document.getElementById('reqDocType');
-    const reqSpecifyGroup = document.getElementById('reqSpecifyDocumentGroup');
-    const reqSemesterGroup = document.getElementById('reqSemesterGroup');
-    const reqSpecifyDoc = document.getElementById('reqSpecifyDoc');
-    const reqSemester = document.getElementById('reqSemester');
-    if(reqDocType) {
-        reqDocType.addEventListener('change', function() {
-            if(this.value === 'Others') {
-                if(reqSpecifyGroup) reqSpecifyGroup.classList.add('show');
-                if(reqSpecifyDoc) reqSpecifyDoc.required = true;
-            } else {
-                if(reqSpecifyGroup) reqSpecifyGroup.classList.remove('show');
-                if(reqSpecifyDoc) { reqSpecifyDoc.required = false; reqSpecifyDoc.value = ''; }
-            }
-            if(this.value === 'Certificate of Grades') {
-                if(reqSemesterGroup) reqSemesterGroup.classList.add('show');
-                if(reqSemester) reqSemester.required = true;
-            } else {
-                if(reqSemesterGroup) reqSemesterGroup.classList.remove('show');
-                if(reqSemester) { reqSemester.required = false; reqSemester.value = ''; }
-            }
-        });
-    }
-
-    // ========== SIDEBAR & SECTION SWITCHING (student & staff) ==========
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
-    function toggleStaffSidebar() { document.getElementById('staffSidebar').classList.toggle('collapsed'); }
-    document.getElementById('sidebarToggle')?.addEventListener('click', toggleSidebar);
-    document.getElementById('staffSidebarToggle')?.addEventListener('click', toggleStaffSidebar);
-    document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            let page = btn.getAttribute('data-page');
-            document.querySelectorAll('.dashboard-section').forEach(sec => sec.style.display = 'none');
-            if(page === 'dashboard') document.getElementById('dashboardSection').style.display = 'block';
-            else if(page === 'request') document.getElementById('requestSection').style.display = 'block';
-            else if(page === 'status') document.getElementById('statusSection').style.display = 'block';
-            else if(page === 'history') document.getElementById('historySection').style.display = 'block';
-            else if(page === 'notifications') document.getElementById('notificationsSection').style.display = 'block';
-            else if(page === 'settings') document.getElementById('settingsSection').style.display = 'block';
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-            btn.classList.add('active');
-        });
-    });
-    document.querySelectorAll('.nav-item[data-staff-section]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            let section = btn.getAttribute('data-staff-section');
-            document.querySelectorAll('.staff-section').forEach(sec => sec.style.display = 'none');
-            if(section === 'dashboard') document.getElementById('staffDashboardSection').style.display = 'block';
-            if(section === 'requests') document.getElementById('staffRequestsSection').style.display = 'block';
-            if(section === 'students') document.getElementById('staffStudentsSection').style.display = 'block';
-            if(section === 'feedback') document.getElementById('staffFeedbackSection').style.display = 'block';
-            document.querySelectorAll('.staff-sidebar .nav-item').forEach(nav => nav.classList.remove('active'));
-            btn.classList.add('active');
-        });
-    });
-
-    document.getElementById('studentRoleBtn')?.addEventListener('click', () => selectRole('student'));
-    document.getElementById('staffRoleBtn')?.addEventListener('click', () => selectRole('staff'));
-
-    // ========== INITIAL DATA ==========
-    if(registeredStudents.length===0){
-        registeredStudents.push({id:1, fullName:'Demo Student', studentNumber:'2024-001', course:'BSIT', yearBlock:'2A', contactNumber:'09123456789', personalEmail:'demo@email.com', address:'Demo', accountEmail:'demo@bu.edu.ph', accountPassword:'123456'});
-        localStorage.setItem('registeredStudents',JSON.stringify(registeredStudents));
-    }
-    if(!localStorage.getItem('staffData')) {
-        localStorage.setItem('staffData', JSON.stringify(staffData));
-    } else {
-        staffData = JSON.parse(localStorage.getItem('staffData'));
-    }
-    showPage('roleSelectionPage');
-    window.getCurrentUser = () => currentUser;
-    window.openSupport = () => alert("For support, please contact the Registrar's Office:\n\n📞 Phone: (052) 123-4567\n📧 Email: registrar@bu.edu.ph\n🏢 Location: Ground Floor, Admin Building\n\nOffice Hours: Monday-Friday, 8:00 AM - 5:00 PM");
-    window.openProfileEditModal = openProfileEditModal;
-    window.openChangePasswordModal = openChangePasswordModal;
-    window.viewTransactionHistory = viewTransactionHistory;
-    window.viewLoginHistory = viewLoginHistory;
-    window.viewActiveDevices = viewActiveDevices;
-    window.logoutAllDevices = logoutAllDevices;
-    window.openAvatarModal = openAvatarModal;
-    window.closeAvatarModal = closeAvatarModal;
-    window.uploadAvatar = uploadAvatar;
-    window.openSettingsPage = openSettingsPage; 
-    window.updateNotificationBadge = updateNotificationBadge;
-    window.filterStaffRequests = filterStaffRequests;
-    window.updateRequestStatus = updateRequestStatus;
-    window.openStaffNotificationsModal = openStaffNotificationsModal;
-    window.closeStaffNotificationsModal = closeStaffNotificationsModal;
-</script>
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
 </body>
-<button onclick="fetch('http://localhost:5000/').then(r=>r.json()).then(d=>alert('✅ Connected: '+d.message)).catch(()=>alert('❌ Not connected'))" style="position:fixed; bottom:20px; right:20px; background:blue; color:white; padding:10px; border-radius:10px; z-index:9999">
-    Check Connection
-</button>
 </html>

@@ -1,110 +1,169 @@
-// frontend/api.js
-const API_BASE_URL = 'http://localhost:5000/api';
+// ============================================
+// BU TRANSAKTO - API Service
+// ============================================
 
-// Store token for authenticated requests
-let authToken = localStorage.getItem('authToken');
+class ApiService {
+    constructor() {
+        this.baseUrl = CONFIG.API_BASE_URL;
+        this.token = localStorage.getItem(CONFIG.STORAGE_KEYS.AUTH_TOKEN);
+    }
 
-// Helper function for API calls
-async function apiCall(endpoint, method = 'GET', body = null, requiresAuth = true) {
-    const headers = {
-        'Content-Type': 'application/json',
-    };
-    
-    if (requiresAuth && authToken) {
-        headers['Authorization'] = `Bearer ${authToken}`;
-    }
-    
-    const config = {
-        method,
-        headers,
-    };
-    
-    if (body) {
-        config.body = JSON.stringify(body);
-    }
-    
-    try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.message || 'API call failed');
+    setToken(token) {
+        this.token = token;
+        if (token) {
+            localStorage.setItem(CONFIG.STORAGE_KEYS.AUTH_TOKEN, token);
+        } else {
+            localStorage.removeItem(CONFIG.STORAGE_KEYS.AUTH_TOKEN);
         }
-        
+    }
+
+    getHeaders(requiresAuth = true) {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        if (requiresAuth && this.token) {
+            headers['Authorization'] = `Bearer ${this.token}`;
+        }
+        return headers;
+    }
+
+    async request(endpoint, method = 'GET', body = null, requiresAuth = true) {
+        const config = {
+            method,
+            headers: this.getHeaders(requiresAuth)
+        };
+        if (body) config.body = JSON.stringify(body);
+
+        try {
+            const response = await fetch(`${this.baseUrl}${endpoint}`, config);
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Request failed');
+            return data;
+        } catch (error) {
+            console.error(`API Error [${method} ${endpoint}]:`, error);
+            throw error;
+        }
+    }
+
+    // Auth
+    async register(userData) {
+        const data = await this.request('/auth/register', 'POST', userData, false);
+        if (data.token) {
+            this.setToken(data.token);
+            this.saveUserData(data);
+        }
         return data;
-    } catch (error) {
-        console.error(`API Error (${endpoint}):`, error);
-        throw error;
+    }
+
+    async login(email, password) {
+        const data = await this.request('/auth/login', 'POST', { email, password }, false);
+        if (data.token) {
+            this.setToken(data.token);
+            this.saveUserData(data);
+        }
+        return data;
+    }
+
+    async getCurrentUser() {
+        return await this.request('/auth/me');
+    }
+
+    // Requests
+    async createRequest(requestData) {
+        return await this.request('/requests', 'POST', requestData);
+    }
+
+    async getMyRequests() {
+        return await this.request('/requests/myrequests');
+    }
+
+    async getAllRequests() {
+        return await this.request('/requests/all');
+    }
+
+    async updateRequestStatus(requestId, status) {
+        return await this.request(`/requests/${requestId}/status`, 'PUT', { status });
+    }
+
+    // Notifications
+    async getNotifications() {
+        return await this.request('/notifications');
+    }
+
+    async markNotificationRead(id) {
+        return await this.request(`/notifications/${id}/read`, 'PUT');
+    }
+
+    async markAllNotificationsRead() {
+        return await this.request('/notifications/read-all', 'PUT');
+    }
+
+    async deleteNotification(id) {
+        return await this.request(`/notifications/${id}`, 'DELETE');
+    }
+
+    // Feedback
+    async submitFeedback(data) {
+        return await this.request('/feedback', 'POST', data);
+    }
+
+    async getAllFeedback() {
+        return await this.request('/feedback');
+    }
+
+    async getFeedbackStats() {
+        return await this.request('/feedback/stats');
+    }
+
+    // Staff
+    async getStaffStats() {
+        return await this.request('/staff/stats');
+    }
+
+    async getAllStudents() {
+        return await this.request('/staff/students');
+    }
+
+    // Users
+    async updateProfile(userId, data) {
+        return await this.request(`/users/${userId}`, 'PUT', data);
+    }
+
+    async changePassword(userId, currentPassword, newPassword) {
+        return await this.request(`/users/${userId}/password`, 'PUT', { currentPassword, newPassword });
+    }
+
+    // Helpers
+    saveUserData(data) {
+        const userData = {
+            _id: data._id, name: data.name, email: data.email,
+            role: data.role, studentId: data.studentId, course: data.course,
+            yearLevel: data.yearLevel, contactNumber: data.contactNumber, address: data.address
+        };
+        localStorage.setItem(CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
+        localStorage.setItem(CONFIG.STORAGE_KEYS.USER_ROLE, data.role);
+    }
+
+    getUserData() {
+        const data = localStorage.getItem(CONFIG.STORAGE_KEYS.USER_DATA);
+        return data ? JSON.parse(data) : null;
+    }
+
+    getUserRole() {
+        return localStorage.getItem(CONFIG.STORAGE_KEYS.USER_ROLE);
+    }
+
+    isAuthenticated() {
+        return !!this.token && !!this.getUserData();
+    }
+
+    logout() {
+        this.setToken(null);
+        localStorage.removeItem(CONFIG.STORAGE_KEYS.USER_DATA);
+        localStorage.removeItem(CONFIG.STORAGE_KEYS.USER_ROLE);
     }
 }
 
-// Auth APIs
-async function registerUser(userData) {
-    return await apiCall('/auth/register', 'POST', userData, false);
-}
-
-async function loginUser(email, password) {
-    const data = await apiCall('/auth/login', 'POST', { email, password }, false);
-    if (data.token) {
-        authToken = data.token;
-        localStorage.setItem('authToken', authToken);
-        localStorage.setItem('user', JSON.stringify(data.user));
-    }
-    return data;
-}
-
-async function getCurrentUser() {
-    return await apiCall('/auth/me', 'GET', null, true);
-}
-
-// Document Request APIs
-async function createRequest(requestData) {
-    return await apiCall('/requests', 'POST', requestData, true);
-}
-
-async function getMyRequests() {
-    return await apiCall('/requests/myrequests', 'GET', null, true);
-}
-
-// Staff APIs
-async function getAllRequests() {
-    return await apiCall('/requests/all', 'GET', null, true);
-}
-
-async function updateRequestStatus(requestId, status) {
-    return await apiCall(`/requests/${requestId}/status`, 'PUT', { status }, true);
-}
-
-async function getStaffStats() {
-    return await apiCall('/staff/stats', 'GET', null, true);
-}
-
-async function getAllStudents() {
-    return await apiCall('/staff/students', 'GET', null, true);
-}
-
-// Feedback APIs
-async function submitFeedback(feedbackData) {
-    return await apiCall('/feedback', 'POST', feedbackData, true);
-}
-
-async function getAllFeedback() {
-    return await apiCall('/feedback', 'GET', null, true);
-}
-
-// Notification APIs
-async function getNotifications() {
-    return await apiCall('/notifications', 'GET', null, true);
-}
-
-async function markNotificationAsRead(notificationId) {
-    return await apiCall(`/notifications/${notificationId}/read`, 'PUT', null, true);
-}
-
-// Logout
-function logout() {
-    authToken = null;
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    window.location.href = 'login.html';
-}
+const api = new ApiService();
+window.api = api;
+const BASE_URL = 'http://localhost:5000/api'; 
