@@ -1,28 +1,43 @@
+// backend/controllers/requestController.js
 const Request = require('../models/Request');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 
-// Create request (Student)
+// 1. Create request (Student)
 const createRequest = async (req, res) => {
   try {
     const { documentType, purpose, notes } = req.body;
     const student = await User.findById(req.user._id);
-    
+
+    // Create the request first
     const request = await Request.create({
       studentId: req.user._id,
       studentName: student.name,
       studentNumber: student.studentId,
       documentType,
       purpose,
-      notes
+      notes,
     });
-    
+
+    // Notify all staff about the new request (only once)
+    const staffUsers = await User.find({ role: 'staff' }).select('_id');
+    if (staffUsers.length) {
+      const staffNotifications = staffUsers.map(staff => ({
+        user: staff._id,
+        title: '📄 New Document Request',
+        message: `${student.name} requested a ${documentType}.`,
+        type: 'info',
+      }));
+      await Notification.insertMany(staffNotifications);
+    }
+
     res.status(201).json(request);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get my requests (Student)
+// 2. Get my requests (Student)
 const getMyRequests = async (req, res) => {
   try {
     const requests = await Request.find({ studentId: req.user._id }).sort({ dateRequested: -1 });
@@ -32,45 +47,52 @@ const getMyRequests = async (req, res) => {
   }
 };
 
-// Get all requests (Staff)
+// 3. Get all requests (Staff)
 const getAllRequests = async (req, res) => {
   try {
-    const requests = await Request.find().populate('studentId', 'name email').sort({ dateRequested: -1 });
+    const requests = await Request.find()
+      .populate('studentId', 'name email')
+      .sort({ dateRequested: -1 });
     res.json(requests);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Update request status (Staff)
+// 4. Update request status (Staff)
 const updateRequestStatus = async (req, res) => {
   try {
+    const { id } = req.params;
     const { status } = req.body;
-    const request = await Request.findById(req.params.id);
-    
+
+    const allowedStatuses = ['pending', 'processing', 'completed', 'rejected'];
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    const request = await Request.findById(id);
     if (!request) {
       return res.status(404).json({ message: 'Request not found' });
     }
-    
+
     request.status = status;
     request.dateProcessed = Date.now();
     request.processedBy = req.user._id;
-    
     await request.save();
-    res.json(request);
+
+    // Notify the student
+    await Notification.create({
+      user: request.studentId,
+      title: `Request ${status}`,
+      message: `Your request for ${request.documentType} has been ${status}.`,
+      type: status === 'rejected' ? 'warning' : 'info',
+    });
+
+    res.json({ message: 'Status updated successfully', request });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
-  const Notification = require('../models/Notification');
-
-  // after updating the request status
-  const notification = await Notification.create({
-    user: req.studentId, // or the request's studentId
-    title: `Request ${newStatus}`,
-    message: `Your request for ${request.documentType} has been ${newStatus}.`,
-    type: newStatus === 'rejected' ? 'warning' : 'info'
-  });
-
 };
 
 module.exports = { createRequest, getMyRequests, getAllRequests, updateRequestStatus };

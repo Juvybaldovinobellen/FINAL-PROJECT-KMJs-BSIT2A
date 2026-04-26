@@ -1,29 +1,15 @@
+// backend/routes/notificationRoutes.js
 const express = require('express');
 const router = express.Router();
-const Notification = require('../models/Notification');
-const { protect } = require('../middleware/authMiddleware');
+const { authenticate, isStaff } = require('../middleware/authMiddleware');
+const { getNotifications, markAsRead, markAllAsRead, deleteNotification } = require('../controllers/notificationController');
 
-// Get user's notifications
-router.get('/', protect, async (req, res) => {
-  try {
-    const notifications = await Notification.find({ user: req.user._id }).sort({ createdAt: -1 });
-    res.json(notifications);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+const protect = authenticate;
+const staffOnly = isStaff;
 
-// Mark notification as read
-router.put('/:id/read', protect, async (req, res) => {
-  try {
-    const notification = await Notification.findOne({ _id: req.params.id, user: req.user._id });
-    if (!notification) return res.status(404).json({ message: 'Notification not found' });
-    notification.read = true;
-    await notification.save();
-    res.json({ message: 'Marked as read' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+router.get('/', protect, getNotifications);
+router.put('/:id/read', protect, markAsRead);
+router.put('/read-all', protect, markAllAsRead);
+router.delete('/:id', protect, deleteNotification);
 
-module.exports = router;
+module.exports = router;   // ✅ no extra 's'

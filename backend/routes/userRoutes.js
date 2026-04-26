@@ -1,7 +1,13 @@
+// backend/routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const { protect, staffOnly } = require('../middleware/authMiddleware');
+// ✅ Import with the correct names from authMiddleware
+const { authenticate, isStaff } = require('../middleware/authMiddleware');
+
+// Alias for readability (optional)
+const protect = authenticate;
+const staffOnly = isStaff;
 
 // Get all users (Staff only)
 router.get('/', protect, staffOnly, async (req, res) => {
@@ -12,18 +18,21 @@ router.get('/', protect, staffOnly, async (req, res) => {
 // Get single user
 router.get('/:id', protect, async (req, res) => {
   const user = await User.findById(req.params.id).select('-password');
+  if (!user) return res.status(404).json({ message: 'User not found' });
   res.json(user);
 });
 
 // Update user
 router.put('/:id', protect, async (req, res) => {
   const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true }).select('-password');
+  if (!user) return res.status(404).json({ message: 'User not found' });
   res.json(user);
 });
 
 // Delete user (Staff only)
 router.delete('/:id', protect, staffOnly, async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
+  const user = await User.findByIdAndDelete(req.params.id);
+  if (!user) return res.status(404).json({ message: 'User not found' });
   res.json({ message: 'User deleted' });
 });
 

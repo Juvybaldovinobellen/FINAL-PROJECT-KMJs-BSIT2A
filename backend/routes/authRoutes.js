@@ -1,10 +1,11 @@
+// backend/routes/authRoutes.js
 const express = require('express');
 const router = express.Router();
 const { registerUser, loginUser, getMe } = require('../controllers/authController');
-const { protect } = require('../middleware/authMiddleware');
+const { authenticate } = require('../middleware/authMiddleware');
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
-router.get('/me', protect, getMe);
+router.post('/register', registerUser);   // ✅ now matches export
+router.post('/login', loginUser);         // ✅ now matches export
+router.get('/me', authenticate, getMe);   // ✅ getMe works
 
 module.exports = router;

@@ -1,31 +1,24 @@
+// backend/middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-const protect = async (req, res, next) => {
-  let token;
-  
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select('-password');
-      next();
-    } catch (error) {
-      res.status(401).json({ message: 'Not authorized, token failed' });
-    }
-  }
-  
-  if (!token) {
-    res.status(401).json({ message: 'Not authorized, no token' });
-  }
-};
-
-const staffOnly = (req, res, next) => {
-  if (req.user && req.user.role === 'staff') {
+const authenticate = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) return res.status(401).json({ error: 'No token provided' });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password');
+    if (!user) return res.status(401).json({ error: 'User not found' });
+    req.user = user;
     next();
-  } else {
-    res.status(403).json({ message: 'Access denied. Staff only.' });
+  } catch (err) {
+    res.status(401).json({ error: 'Invalid or expired token' });
   }
 };
 
-module.exports = { protect, staffOnly };
+const isStaff = (req, res, next) => {
+  if (req.user && req.user.role === 'staff') return next();
+  res.status(403).json({ error: 'Access denied. Staff only.' });
+};
+
+module.exports = { authenticate, isStaff };

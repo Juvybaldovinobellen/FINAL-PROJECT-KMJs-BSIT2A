@@ -6,7 +6,7 @@ const requestSchema = new mongoose.Schema({
   studentNumber: { type: String },
   documentType: { 
     type: String, 
-    enum: ['Transcript of Records', 'Certificate of Enrollment', 'Good Moral Certificate', 'Diploma', 'Copy of Grades'],
+    enum: ['Transcript of Records (TOR)', 'Certificate of Grades', 'Certificate of Registration', 'Certificate of Enrollment', 'Good Moral Certificate', 'Diploma', 'Copy of Grades', 'Honorable Dismissal', 'Certification of Units Earned', 'Others'],
     required: true 
   },
   purpose: { type: String },

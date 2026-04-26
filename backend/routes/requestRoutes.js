@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { protect, staffOnly } = require('../middleware/authMiddleware');
+const { authenticate, isStaff } = require('../middleware/authMiddleware');
 const { createRequest, getMyRequests, getAllRequests, updateRequestStatus } = require('../controllers/requestController');
+
+// Alias for convenience
+const protect = authenticate;
+const staffOnly = isStaff;
 
 // Student routes
 router.post('/', protect, createRequest);

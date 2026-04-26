@@ -1,3 +1,4 @@
+// backend/controllers/authController.js
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
@@ -66,9 +67,10 @@ const loginUser = async (req, res) => {
   }
 };
 
-// Get current user
+// Get current user (requires authentication)
 const getMe = async (req, res) => {
   res.json(req.user);
 };
 
+// ✅ Single, correct export
 module.exports = { registerUser, loginUser, getMe };
