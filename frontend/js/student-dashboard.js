@@ -851,7 +851,7 @@ class StudentDashboard {
     }
 
     // ==================== HELPER METHODS ====================
-
+     
     /**
      * Safely set text content of an element
      */

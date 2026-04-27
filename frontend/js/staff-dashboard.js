@@ -785,7 +785,7 @@ class StaffDashboard {
             Utils.showToast(error.message || 'Failed to change password', 'error');
         }
     }
-
+      
     // ==================== HELPERS ====================
 
     static closeModal(modalId) {
