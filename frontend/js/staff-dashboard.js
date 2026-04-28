@@ -33,6 +33,7 @@ class StaffDashboard {
         this.setupFormEvents();
         this.setupSettingsToggle();
         this.setupModalCloseButtons();
+        this.setupLogout();
     }
 
     /**
@@ -600,6 +601,24 @@ class StaffDashboard {
         });
     }
 
+    static setupLogout() {
+        // Find the sidebar logout button (likely with id="sidebarLogoutBtn" or class="logout-btn")
+        const sidebarLogoutBtn = document.getElementById('sidebarLogoutBtn') || document.querySelector('.logout-btn');
+        if (sidebarLogoutBtn) {
+            sidebarLogoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                Auth.logout();
+            });
+        }
+        
+        // Settings page logout button (already handled, but keep for consistency)
+        const settingsLogoutBtn = document.getElementById('logoutBtn');
+        if (settingsLogoutBtn) {
+            settingsLogoutBtn.addEventListener('click', () => {
+                Auth.logout();
+            });
+        }
+    }
     // ==================== RENDER METHODS ====================
 
     static renderRequestRow(request, isRecent = false) {
