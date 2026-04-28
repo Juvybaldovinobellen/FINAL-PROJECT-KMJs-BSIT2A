@@ -5,9 +5,31 @@ const Request = require('../models/Request');
 const getStats = async (req, res) => {
   try {
     const totalStudents = await User.countDocuments({ role: 'student' });
+    
+    // Count all request statuses
     const pendingRequests = await Request.countDocuments({ status: 'pending' });
+    const processingRequests = await Request.countDocuments({ status: 'processing' });
     const completedRequests = await Request.countDocuments({ status: 'completed' });
-    res.json({ totalStudents, pendingRequests, completedRequests });
+    const rejectedRequests = await Request.countDocuments({ status: 'rejected' });
+    
+    // Calculate total
+    const totalRequests = pendingRequests + processingRequests + completedRequests + rejectedRequests;
+
+    // Get recent 5 requests for dashboard
+    const recentRequests = await Request.find()
+      .sort({ dateRequested: -1 })
+      .limit(5)
+      .populate('studentId', 'name studentId');
+
+    res.json({
+      totalRequests,
+      pendingRequests,
+      processingRequests,
+      completedRequests,
+      rejectedRequests,
+      totalStudents,
+      recentRequests
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -24,11 +46,14 @@ const getAllStudents = async (req, res) => {
 
 const getDashboardData = async (req, res) => {
   try {
-    const recentRequests = await Request.find().sort({ createdAt: -1 }).limit(10).populate('studentId', 'name');
-    const stats = await getStats(req, res); // re-use but careful with response
-    // Actually compute stats directly
+    const recentRequests = await Request.find()
+      .sort({ dateRequested: -1 })
+      .limit(10)
+      .populate('studentId', 'name studentId');
+    
     const totalStudents = await User.countDocuments({ role: 'student' });
     const pending = await Request.countDocuments({ status: 'pending' });
+    
     res.json({ totalStudents, pendingRequests: pending, recentRequests });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -36,12 +61,23 @@ const getDashboardData = async (req, res) => {
 };
 
 const updateRequestStatus = async (req, res) => {
-  // This might already be in requestController; you can call it or re-implement
-  const { id } = req.params;
-  const { status } = req.body;
-  // ... similar to requestController.updateRequestStatus
-  const request = await Request.findByIdAndUpdate(id, { status }, { new: true });
-  res.json(request);
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const allowed = ['pending', 'processing', 'completed', 'rejected'];
+    if (!allowed.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+    const request = await Request.findByIdAndUpdate(
+      id,
+      { status, dateProcessed: status === 'completed' || status === 'rejected' ? Date.now() : null },
+      { new: true }
+    );
+    if (!request) return res.status(404).json({ message: 'Request not found' });
+    res.json(request);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports = { getStats, getAllStudents, getDashboardData, updateRequestStatus };

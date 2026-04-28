@@ -166,6 +166,7 @@ class StudentDashboard {
                             <th>Copies</th>
                             <th>Date Requested</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -783,16 +784,28 @@ class StudentDashboard {
     }
 
     static renderFullRequestRow(request) {
-        const status = Utils.getStatusColor(request.status);
-        return `
-            <tr>
-                <td><strong>${Utils.sanitize(request.documentType)}</strong></td>
-                <td>${Utils.sanitize(request.purpose || '-')}</td>
-                <td>${request.copies || 1}</td>
-                <td>${Utils.formatDate(request.dateRequested, 'short')}</td>
-                <td><span class="status-badge status-${request.status}">${status.label}</span></td>
-            </tr>`;
-    }
+    const status = Utils.getStatusColor(request.status);
+    const isPending = request.status === 'pending';
+    
+    return `
+        <tr>
+            <td><strong>${Utils.sanitize(request.documentType)}</strong></td>
+            <td>${Utils.sanitize(request.purpose || '-')}</td>
+            <td>${request.copies || 1}</td>
+            <td>${Utils.formatDate(request.dateRequested, 'short')}</td>
+            <td><span class="status-badge status-${request.status}">${status.label}</span></td>
+            <td class="action-btns">
+                ${isPending ? `
+                    <button class="btn btn-warning btn-xs" onclick="StudentDashboard.openEditRequestModal('${request._id}')" title="Edit">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button class="btn btn-danger btn-xs" onclick="StudentDashboard.confirmDeleteRequest('${request._id}')" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                ` : '<span class="text-muted">No actions</span>'}
+            </td>
+        </tr>`;
+}
 
     static renderHistoryRow(request) {
         const status = Utils.getStatusColor(request.status);
@@ -858,6 +871,128 @@ class StudentDashboard {
     static setText(elementId, text) {
         const el = document.getElementById(elementId);
         if (el) el.textContent = text || '';
+    }
+
+        // ==================== EDIT & DELETE REQUESTS (STUDENT) ====================
+
+    static openEditRequestModal(requestId) {
+        const request = this.requests.find(r => r._id === requestId);
+        if (!request || request.status !== 'pending') {
+            Utils.showToast('You can only edit pending requests', 'warning');
+            return;
+        }
+
+        let modal = document.getElementById('studentEditRequestModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'studentEditRequestModal';
+            modal.className = 'modal-overlay hidden';
+            modal.innerHTML = `
+                <div class="modal" style="max-width:600px;">
+                    <div class="modal-header">
+                        <h3>Edit Your Request</h3>
+                        <button class="modal-close" onclick="StudentDashboard.closeEditModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="studentEditRequestForm">
+                            <input type="hidden" id="editRequestId">
+                            <div class="form-group">
+                                <label>Document Type</label>
+                                <input type="text" class="form-input" id="editDocType" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Purpose</label>
+                                <input type="text" class="form-input" id="editPurpose" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Copies</label>
+                                <input type="number" class="form-input" id="editCopies" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Semester/Year</label>
+                                <input type="text" class="form-input" id="editSemesterYear">
+                            </div>
+                            <div class="form-group">
+                                <label>Notes</label>
+                                <textarea class="form-input" id="editNotes" rows="2"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="StudentDashboard.closeEditModal()">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        document.getElementById('editRequestId').value = request._id;
+        document.getElementById('editDocType').value = request.documentType || '';
+        document.getElementById('editPurpose').value = request.purpose || '';
+        document.getElementById('editCopies').value = request.copies || 1;
+        document.getElementById('editSemesterYear').value = request.semesterYear || '';
+        document.getElementById('editNotes').value = request.notes || '';
+
+        modal.classList.remove('hidden');
+
+        const form = document.getElementById('studentEditRequestForm');
+        if (!form.hasListener) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await StudentDashboard.saveEditedRequest();
+            });
+            form.hasListener = true;
+        }
+    }
+
+    static async saveEditedRequest() {
+        const id = document.getElementById('editRequestId').value;
+        const updatedData = {
+            documentType: document.getElementById('editDocType').value,
+            purpose: document.getElementById('editPurpose').value,
+            copies: parseInt(document.getElementById('editCopies').value),
+            semesterYear: document.getElementById('editSemesterYear').value,
+            notes: document.getElementById('editNotes').value
+        };
+
+        try {
+            Utils.showLoading('Updating request...');
+            await api.updateRequest(id, updatedData);
+            Utils.hideLoading();
+            Utils.showToast('Request updated successfully', 'success');
+            this.closeEditModal();
+            await this.refreshAllData();
+            this.loadMyRequests();
+        } catch (error) {
+            Utils.hideLoading();
+            Utils.showToast(error.message || 'Update failed', 'error');
+        }
+    }
+
+    static closeEditModal() {
+        const modal = document.getElementById('studentEditRequestModal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    static async confirmDeleteRequest(requestId) {
+        const request = this.requests.find(r => r._id === requestId);
+        if (!request || request.status !== 'pending') {
+            Utils.showToast('You can only delete pending requests', 'warning');
+            return;
+        }
+        if (!confirm('⚠️ Are you sure you want to delete this request? This action cannot be undone.')) return;
+        try {
+            Utils.showLoading('Deleting...');
+            await api.deleteRequest(requestId);
+            Utils.hideLoading();
+            Utils.showToast('Request deleted', 'success');
+            await this.refreshAllData();
+            this.loadMyRequests();
+        } catch (error) {
+            Utils.hideLoading();
+            Utils.showToast(error.message || 'Delete failed', 'error');
+        }
     }
 }
 

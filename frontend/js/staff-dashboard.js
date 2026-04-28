@@ -189,7 +189,6 @@ class StaffDashboard {
                         <th>Copies</th>
                         <th>Date</th>
                         <th>Status</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -613,16 +612,6 @@ class StaffDashboard {
                 <td>${Utils.sanitize(request.documentType)}</td>
                 <td>${Utils.formatDate(request.dateRequested, 'short')}</td>
                 <td><span class="status-badge status-${request.status}">${status.label}</span></td>
-                <td>
-                    <div class="action-btns">
-                        <button class="btn btn-info btn-xs" onclick="StaffDashboard.viewRequestDetails('${request._id}')" title="View">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-primary btn-xs" onclick="StaffDashboard.openUpdateStatusModal('${request._id}')" title="Update Status">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </div>
-                </td>
             </tr>`;
     }
 
@@ -642,15 +631,13 @@ class StaffDashboard {
                 <td>${request.copies || 1}</td>
                 <td>${Utils.formatDate(request.dateRequested, 'short')}</td>
                 <td><span class="status-badge status-${request.status}">${status.label}</span></td>
-                <td>
-                    <div class="action-btns">
-                        <button class="btn btn-info btn-xs" onclick="StaffDashboard.viewRequestDetails('${request._id}')" title="View Details">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-primary btn-xs" onclick="StaffDashboard.openUpdateStatusModal('${request._id}')" title="Update Status">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </div>
+                <td class="action-btns">
+                    <button class="btn btn-info btn-xs" onclick="StaffDashboard.viewRequestDetails('${request._id}')" title="View Details">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-primary btn-xs" onclick="StaffDashboard.openUpdateStatusModal('${request._id}')" title="Update Status">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </td>
             </tr>`;
     }
@@ -669,7 +656,7 @@ class StaffDashboard {
                 <td>${Utils.sanitize(student.contactNumber || 'N/A')}</td>
                 <td>${Utils.sanitize(student.email || 'N/A')}</td>
                 <td><span class="status-badge status-pending">${requestCount} request(s)</span></td>
-            </tr>`;
+             </tr>`;
     }
 
     static renderFeedbackRow(feedback) {
@@ -785,7 +772,7 @@ class StaffDashboard {
             Utils.showToast(error.message || 'Failed to change password', 'error');
         }
     }
-      
+    
     // ==================== HELPERS ====================
 
     static closeModal(modalId) {

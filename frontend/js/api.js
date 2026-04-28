@@ -85,6 +85,21 @@ class ApiService {
         return await this.request(`/requests/${requestId}/status`, 'PUT', { status });
     }
 
+        // Full update of a request (staff only)
+    async updateRequest(requestId, data) {
+        return await this.request(`/requests/${requestId}`, 'PUT', data);
+    }
+
+    // Delete a request (staff only)
+    async deleteRequest(requestId) {
+        return await this.request(`/requests/${requestId}`, 'DELETE');
+    }
+
+    // Delete a user (staff only)
+    async deleteUser(userId) {
+        return await this.request(`/users/${userId}`, 'DELETE');
+    }
+
     // Notifications
     async getNotifications() {
         return await this.request('/notifications');
