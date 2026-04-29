@@ -30,7 +30,7 @@ app.use(cors({
 const { submitFeedback, getAllFeedback } = require('./controllers/feedbackController');
 
 // ========== PUBLIC ROUTES ==========
-app.get('/', (req, res) => {
+app.get('/api/status', (req, res) => {
     res.json({ message: 'BU Transakto API is running!' });
 });
 
@@ -56,6 +56,15 @@ app.use('/api/staff', require('./routes/staffRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 // app.use('/api/feedback', require('./routes/feedbackRoutes'));// Optional: if you have a feedback routes file with more endpoints, uncomment next line
 // app.use('/api/feedback', require('./routes/feedbackRoutes'));
+
+// Serve static frontend files
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// (Optional) Fallback to index.html for client‑side routing
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
+});
 
 // ========== ERROR HANDLING MIDDLEWARE (must be last) ==========
 app.use((err, req, res, next) => {
