@@ -27,6 +27,21 @@ const markAsRead = async (req, res) => {
   }
 };
 
+// Mark a single notification as unread
+const markAsUnread = async (req, res) => {
+  try {
+    const notification = await Notification.findOneAndUpdate(
+      { _id: req.params.id, user: req.user._id },
+      { read: false },
+      { new: true }
+    );
+    if (!notification) return res.status(404).json({ message: 'Notification not found' });
+    res.json(notification);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Mark all unread notifications as read for the user
 const markAllAsRead = async (req, res) => {
   try {
@@ -54,4 +69,4 @@ const deleteNotification = async (req, res) => {
   }
 };
 
-module.exports = { getNotifications, markAsRead, markAllAsRead, deleteNotification };
+module.exports = { getNotifications, markAsRead, markAsUnread, markAllAsRead, deleteNotification };

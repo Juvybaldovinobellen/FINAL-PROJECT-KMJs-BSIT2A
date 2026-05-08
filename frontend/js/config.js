@@ -2,7 +2,15 @@
 // BU Transakto - Configuration
 
 const CONFIG = {
-    API_BASE_URL: '/api',
+    // ✅ Dynamic API URL - works in all environments
+    API_BASE_URL: (() => {
+        // For production, use relative URL
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            return '/api';
+        }
+        // For local development, use port 5000
+        return 'http://localhost:5000/api';
+    })(),
     
     // Application Settings
     APP_NAME: 'BU Transakto',

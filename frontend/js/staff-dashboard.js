@@ -306,65 +306,245 @@ class StaffDashboard {
     }
 
     /**
-     * Load notifications
-     */
-    static async loadNotifications() {
-        try {
-            this.notifications = await api.getNotifications();
-            const unreadCount = this.notifications.filter(n => !n.read).length;
+ * Load notifications
+ */
+/**
+ * Load notifications
+ */
+static async loadNotifications() {
+    try {
+        this.notifications = await api.getNotifications();
+        const unreadCount = this.notifications.filter(n => !n.read).length;
 
-            // Update badges
-            const sidebarBadge = document.getElementById('sidebarNotifBadge');
-            const topbarBadge = document.getElementById('topbarNotifBadge');
-            
-            [sidebarBadge, topbarBadge].forEach(badge => {
-                if (badge) {
-                    if (unreadCount > 0) {
-                        badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
-                        badge.classList.remove('hidden');
-                    } else {
-                        badge.classList.add('hidden');
-                    }
+        // Update badges
+        const sidebarBadge = document.getElementById('sidebarNotifBadge');
+        const topbarBadge = document.getElementById('topbarNotifBadge');
+        
+        [sidebarBadge, topbarBadge].forEach(badge => {
+            if (badge) {
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.textContent = '';
+                    badge.classList.add('hidden');
                 }
-            });
+            }
+        });
 
-            // Render notifications list
-            const container = document.getElementById('allNotificationsList');
-            if (!container) return;
+        // Render notifications list
+        const container = document.getElementById('allNotificationsList');
+        if (!container) return;
 
-            if (this.notifications.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">🔔</div>
-                        <h4>No notifications</h4>
-                    </div>`;
+        if (this.notifications.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🔔</div>
+                    <h4>No notifications</h4>
+                </div>`;
+            return;
+        }
+
+        container.innerHTML = this.notifications.map(n => this.renderNotificationItem(n)).join('');
+        
+        // Attach click handlers to notifications
+        this.attachNotificationClickHandlers();
+    } catch (error) {
+        console.error('Failed to load notifications:', error);
+    }
+}
+
+/**
+ * Attach click handlers to notification items
+ * ADD THIS NEW METHOD
+ */
+/**
+ * Attach click handlers to notification items
+ */
+static attachNotificationClickHandlers() {
+    // Handle notification item click - mark as read when clicked
+    document.querySelectorAll('.notification-item').forEach(notification => {
+        // Remove existing listener to avoid duplicates
+        notification.removeEventListener('click', this.notificationClickHandler);
+        
+        // Create bound handler
+        this.notificationClickHandler = (e) => {
+            // Don't trigger if clicking on mark as read/unread button
+            if(e.target.classList.contains('mark-read-btn') || 
+               e.target.classList.contains('mark-unread-btn')) {
                 return;
             }
-
-            container.innerHTML = this.notifications.map(n => this.renderNotificationItem(n)).join('');
-        } catch (error) {
-            console.error('Failed to load notifications:', error);
-        }
-    }
-
-    /**
-     * Update request status
-     */
-    static async updateRequestStatus(requestId, newStatus) {
-        try {
-            Utils.showLoading('Updating status...');
-            await api.updateRequestStatus(requestId, newStatus);
-            Utils.hideLoading();
-            Utils.showToast(`Request status updated to ${newStatus}`, 'success');
             
-            this.closeModal('updateStatusModal');
-            await this.refreshAllData();
-        } catch (error) {
-            Utils.hideLoading();
-            Utils.showToast(error.message || 'Failed to update status', 'error');
-        }
-    }
+            const notificationId = notification.dataset.id;
+            const isRead = notification.classList.contains('read');
+            
+            // If not read, mark as read
+            if (!isRead) {
+                console.log('Notification clicked, marking as read:', notificationId);
+                this.markNotificationAsRead(notificationId);
+            }
+        };
+        
+        notification.addEventListener('click', this.notificationClickHandler);
+    });
+    
+    // Handle mark as read button clicks
+    document.querySelectorAll('.mark-read-btn').forEach(btn => {
+        btn.removeEventListener('click', this.markReadHandler);
+        
+        this.markReadHandler = (e) => {
+            e.stopPropagation();
+            const notificationId = btn.dataset.id;
+            console.log('Mark as read button clicked:', notificationId);
+            this.markNotificationAsRead(notificationId);
+        };
+        
+        btn.addEventListener('click', this.markReadHandler);
+    });
+    
+    // Handle mark as unread button clicks
+    document.querySelectorAll('.mark-unread-btn').forEach(btn => {
+        btn.removeEventListener('click', this.markUnreadHandler);
+        
+        this.markUnreadHandler = (e) => {
+            e.stopPropagation();
+            const notificationId = btn.dataset.id;
+            console.log('Mark as unread button clicked:', notificationId);
+            this.markNotificationAsUnread(notificationId);
+        };
+        
+        btn.addEventListener('click', this.markUnreadHandler);
+    });
+}
 
+/**
+ * Mark notification as read
+ * ADD THIS NEW METHOD
+ */
+/**
+ * Mark notification as read
+ */
+static async markNotificationAsRead(notificationId) {
+    try {
+        console.log('Sending request to mark as read:', notificationId);
+        
+        // Use your API method instead of direct fetch
+        await api.markNotificationRead(notificationId);
+        
+        const notification = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+        if (notification) {
+            // Remove unread class, add read class
+            notification.classList.remove('unread');
+            notification.classList.add('read');
+            
+            // Update button if exists - change from "Mark as Read" to "Mark as Unread"
+            const btn = notification.querySelector('.mark-read-btn');
+            if(btn) {
+                btn.textContent = 'Mark as Unread';
+                btn.classList.remove('mark-read-btn');
+                btn.classList.add('mark-unread-btn');
+            }
+            
+            // Update notification count in badges
+            await this.updateNotificationCount();
+            
+            console.log('Successfully marked as read');
+            Utils.showToast('Notification marked as read', 'success');
+        }
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
+        Utils.showToast(error.message || 'Failed to mark notification as read', 'error');
+    }
+}
+
+/**
+ * Mark notification as unread
+ * ADD THIS NEW METHOD
+ */
+/**
+ * Mark notification as unread
+ */
+static async markNotificationAsUnread(notificationId) {
+    try {
+        console.log('Sending request to mark as unread:', notificationId);
+        
+        // Use your API method for unread
+        await api.markNotificationAsUnread(notificationId);
+        
+        const notification = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+        if (notification) {
+            // Remove read class, add unread class
+            notification.classList.remove('read');
+            notification.classList.add('unread');
+            
+            // Update button if exists - change from "Mark as Unread" to "Mark as Read"
+            const btn = notification.querySelector('.mark-unread-btn');
+            if(btn) {
+                btn.textContent = 'Mark as Read';
+                btn.classList.remove('mark-unread-btn');
+                btn.classList.add('mark-read-btn');
+            }
+            
+            // Update notification count in badges
+            await this.updateNotificationCount();
+            
+            console.log('Successfully marked as unread');
+            Utils.showToast('Notification marked as unread', 'success');
+        }
+    } catch (error) {
+        console.error('Error marking notification as unread:', error);
+        Utils.showToast(error.message || 'Failed to mark notification as unread', 'error');
+    }
+}
+
+/**
+ * Update notification count in badges
+ */
+static async updateNotificationCount() {
+    try {
+        // Fetch fresh notifications to get updated count
+        const notifications = await api.getNotifications();
+        const unreadCount = notifications.filter(n => !n.read).length;
+        
+        const sidebarBadge = document.getElementById('sidebarNotifBadge');
+        const topbarBadge = document.getElementById('topbarNotifBadge');
+        
+        [sidebarBadge, topbarBadge].forEach(badge => {
+            if (badge) {
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.textContent = '';
+                    badge.classList.add('hidden');
+                }
+            }
+        });
+        
+        // Also update the local notifications array
+        this.notifications = notifications;
+    } catch (error) {
+        console.error('Failed to update notification count:', error);
+    }
+}
+
+/**
+ * Update request status
+ */
+static async updateRequestStatus(requestId, newStatus) {
+    try {
+        Utils.showLoading('Updating status...');
+        await api.updateRequestStatus(requestId, newStatus);
+        Utils.hideLoading();
+        Utils.showToast(`Request status updated to ${newStatus}`, 'success');
+        
+        this.closeModal('updateStatusModal');
+        await this.refreshAllData();
+    } catch (error) {
+        Utils.hideLoading();
+        Utils.showToast(error.message || 'Failed to update status', 'error');
+    }
+}
     /**
      * View request details
      */
@@ -698,9 +878,16 @@ class StaffDashboard {
             success: 'fa-check-circle',
             warning: 'fa-exclamation-triangle'
         };
+        
+        const isUnread = !notification.read;
+        
+        // Show the OPPOSITE action button (if unread, show "Mark as Read" button)
+        const markButton = notification.read 
+            ? `<button class="mark-unread-btn btn-text" data-id="${notification._id}">📖 Mark as Unread</button>`
+            : `<button class="mark-read-btn btn-text" data-id="${notification._id}">✓ Mark as Read</button>`;
 
         return `
-            <div class="notification-item ${notification.read ? '' : 'unread'}">
+            <div class="notification-item ${isUnread ? 'unread' : 'read'}" data-id="${notification._id}">
                 <div class="notif-icon ${notification.type || 'info'}">
                     <i class="fas ${iconMap[notification.type] || 'fa-bell'}"></i>
                 </div>
@@ -708,6 +895,9 @@ class StaffDashboard {
                     <div class="notif-title">${Utils.sanitize(notification.title)}</div>
                     <div class="notif-message">${Utils.sanitize(notification.message)}</div>
                     <div class="notif-time">${Utils.timeAgo(notification.createdAt)}</div>
+                    <div class="notif-actions">
+                        ${markButton}
+                    </div>
                 </div>
             </div>`;
     }

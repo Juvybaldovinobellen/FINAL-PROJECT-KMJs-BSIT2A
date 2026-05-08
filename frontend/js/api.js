@@ -85,7 +85,7 @@ class ApiService {
         return await this.request(`/requests/${requestId}/status`, 'PUT', { status });
     }
 
-        // Full update of a request (staff only)
+    // Full update of a request (staff only)
     async updateRequest(requestId, data) {
         return await this.request(`/requests/${requestId}`, 'PUT', data);
     }
@@ -107,6 +107,11 @@ class ApiService {
 
     async markNotificationRead(id) {
         return await this.request(`/notifications/${id}/read`, 'PUT');
+    }
+
+    // ADD THIS NEW METHOD - Mark notification as unread
+    async markNotificationAsUnread(id) {
+        return await this.request(`/notifications/${id}/unread`, 'PUT');
     }
 
     async markAllNotificationsRead() {
@@ -181,4 +186,4 @@ class ApiService {
 
 const api = new ApiService();
 window.api = api;
-const BASE_URL = 'http://localhost:5000/api'; 
+const BASE_URL = 'http://localhost:5000/api';
