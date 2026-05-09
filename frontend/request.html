@@ -77,14 +77,30 @@
                     </div>
                 </div>
 
-                <!-- 4. Quantity -->
+                <!-- 4. Semester & Year Dropdown (for all document types) -->
+                <div class="form-group">
+                    <label for="semesterYear">Semester & Year <span class="required">*</span></label>
+                    <select id="semesterYear" name="semesterYear" required>
+                        <option value="" disabled selected>Select Semester & Year</option>
+                        <option value="1st Semester, 2023-2024">1st Semester, 2023-2024</option>
+                        <option value="2nd Semester, 2023-2024">2nd Semester, 2023-2024</option>
+                        <option value="Summer, 2023-2024">Summer, 2023-2024</option>
+                        <option value="1st Semester, 2024-2025">1st Semester, 2024-2025</option>
+                        <option value="2nd Semester, 2024-2025">2nd Semester, 2024-2025</option>
+                        <option value="Summer, 2024-2025">Summer, 2024-2025</option>
+                        <option value="1st Semester, 2025-2026">1st Semester, 2025-2026</option>
+                        <option value="2nd Semester, 2025-2026">2nd Semester, 2025-2026</option>
+                    </select>
+                </div>
+
+                 <!-- 5. Number of Copies -->
                 <div class="form-group">
                     <label for="quantity">Number of Copies <span class="required">*</span></label>
                     <input type="number" id="quantity" name="quantity" min="1" value="1" required>
                 </div>
-
-                <!-- 5. Submit Button -->
-                <button type="submit" class="submit-btn"> Submit Request</button>
+                
+                <!-- 6. Submit Button -->
+                <button type="submit" class="submit-btn">Submit Request</button>
                 <div id="successMessage" class="success-message"></div>
             </form>
         </div>

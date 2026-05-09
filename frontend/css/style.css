@@ -1433,11 +1433,9 @@ tbody tr:last-child td {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 999;
+    z-index: 9999;  /* Increase from 999 to 9999 */
     padding: 1.5rem;
-    animation: fadeIn 0.2s ease;
 }
-
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -1505,6 +1503,27 @@ tbody tr:last-child td {
 
 .modal-body {
     padding: 1.5rem;
+    overflow-y: visible !important; 
+    overflow-x: visible !important;
+    max-height: none !important;
+}
+
+.modal .form-group {
+    position: relative;
+}
+
+.modal select.form-input {
+    width: 100%;
+    position: relative;
+    background-color: white;
+}
+
+.modal select.form-input option {
+    position: static !important;
+    display: block !important;
+    background-color: white !important;
+    color: #333 !important;
+    padding: 8px 12px !important;
 }
 
 .modal-footer {
@@ -1515,6 +1534,15 @@ tbody tr:last-child td {
     border-top: 1px solid var(--gray-100);
 }
 
+select.form-input {
+    position: relative;
+    z-index: 100;
+}
+
+select.form-input:focus {
+    position: relative;
+    z-index: 1000;
+}
 /* ==================== NOTIFICATION PANEL ==================== */
 .notification-panel {
     position: fixed;
@@ -3138,4 +3166,42 @@ tbody td {
     .sidebar-overlay.active {
         display: block;
     }
+}
+
+/* Fix dropdown options visibility */
+.form-input select,
+.form-input option {
+    display: block !important;
+    visibility: visible !important;
+}
+
+select.form-input option {
+    background-color: white !important;
+    color: #333 !important;
+    padding: 10px !important;
+}
+
+/* For dropdown to appear above modal */
+.modal .form-input option {
+    background-color: white;
+    color: #333;
+}
+
+/* Dark mode fix */
+body.dark-mode select.form-input option {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+.modal {
+    overflow: visible !important;
+}
+
+.modal-body {
+    overflow: visible !important;
+}
+
+.form-input {
+    position: relative;
+    z-index: 1;
 }

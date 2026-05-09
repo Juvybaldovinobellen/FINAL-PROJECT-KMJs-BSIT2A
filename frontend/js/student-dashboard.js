@@ -463,6 +463,24 @@ class StudentDashboard {
     static openEditProfile() {
         this.loadProfileDetails();
         document.getElementById('editProfileModal')?.classList.remove('hidden');
+
+        // Force dropdown to be visible
+    setTimeout(() => {
+        const selects = document.querySelectorAll('#editCourse, #editYearLevel');
+        selects.forEach(select => {
+            select.style.position = 'relative';
+            select.style.zIndex = '10000';
+            select.style.backgroundColor = 'white';
+            
+            // Also style the options
+            const options = select.querySelectorAll('option');
+            options.forEach(opt => {
+                opt.style.backgroundColor = 'white';
+                opt.style.color = '#333';
+                opt.style.padding = '8px';
+            });
+        });
+    }, 100);
     }
 
     /**
