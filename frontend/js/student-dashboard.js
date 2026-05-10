@@ -950,10 +950,10 @@ class StudentDashboard {
                     <form id="studentEditRequestForm">
                         <input type="hidden" id="editRequestId">
                         <div class="form-group">
-                            <label>Document Type </label>
+                            <label>Document Type <span class="required">*</span></label>
                             <select class="form-input" id="editDocType" required>
                                 ${CONFIG.DOCUMENT_TYPES.map(type => `<option value="${type}">${type}</option>`).join('')}
-                            </select><span class="required">*</span>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Purpose <span class="required">*</span></label>
