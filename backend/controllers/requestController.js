@@ -6,7 +6,7 @@ const Notification = require('../models/Notification');
 // 1. Create request (Student)
 const createRequest = async (req, res) => {
   try {
-    const { documentType, purpose, notes } = req.body;
+    const { documentType, purpose, notes, semesterYear, copies } = req.body;
     const student = await User.findById(req.user._id);
 
     // Create the request first
@@ -17,6 +17,8 @@ const createRequest = async (req, res) => {
       documentType,
       purpose,
       notes,
+      semesterYear: semesterYear || '',
+      copies: copies || 1,        
     });
 
     // Notify all staff about the new request (only once)

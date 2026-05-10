@@ -10,6 +10,7 @@ const requestSchema = new mongoose.Schema({
     required: true 
   },
   purpose: { type: String },
+  semesterYear: { type: String, default: '' },
   notes: { type: String },
   status: { 
     type: String, 

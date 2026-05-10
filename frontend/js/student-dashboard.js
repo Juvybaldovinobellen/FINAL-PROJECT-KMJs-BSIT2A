@@ -246,8 +246,10 @@ class StudentDashboard {
         // Pre-fill edit form
         this.setText('editName', user.name);
         this.setText('editStudentId', user.studentId);
-        this.setText('editCourse', user.course);
-        this.setText('editYearLevel', user.yearLevel);
+        const editCourse = document.getElementById('editCourse');
+        if (editCourse) editCourse.value = user.course || '';
+        const editYearLevel = document.getElementById('editYearLevel');
+        if (editYearLevel) editYearLevel.value = user.yearLevel || '';
         this.setText('editContact', user.contactNumber);
         this.setText('editEmail', user.email);
         this.setText('editAddress', user.address);
@@ -389,12 +391,22 @@ class StudentDashboard {
             return;
         }
 
+        // Get course and year level
+        const course = document.getElementById('reqCourse')?.value;
+        const yearLevel = document.getElementById('reqYearLevel')?.value;
+        if (!course || !yearLevel) {
+            Utils.showToast('Please select your course and year level', 'warning');
+            return;
+        }
+
         const requestData = {
             documentType: docType,
             purpose: purpose,
             notes: document.getElementById('notes')?.value?.trim() || '',
             semesterYear: document.getElementById('semesterYear')?.value?.trim() || '',
-            copies: parseInt(document.getElementById('copies')?.value) || 1
+            copies: parseInt(document.getElementById('copies')?.value) || 1,
+            course: course,          
+            yearLevel: yearLevel     
         };
 
         try {
@@ -487,34 +499,57 @@ class StudentDashboard {
      * Save profile changes
      */
     static async saveProfile() {
-        const user = api.getUserData();
-        if (!user) return;
+    const user = api.getUserData();
+    if (!user) return;
 
-        const updatedData = {
-            name: document.getElementById('editName')?.value,
-            studentId: document.getElementById('editStudentId')?.value,
-            course: document.getElementById('editCourse')?.value,
-            yearLevel: document.getElementById('editYearLevel')?.value,
-            contactNumber: document.getElementById('editContact')?.value,
-            email: document.getElementById('editEmail')?.value,
-            address: document.getElementById('editAddress')?.value
-        };
+    // Get values from form
+    const name = document.getElementById('editName')?.value.trim();
+    const studentId = document.getElementById('editStudentId')?.value.trim();
+    const course = document.getElementById('editCourse')?.value;
+    const yearLevel = document.getElementById('editYearLevel')?.value;
+    const contactNumber = document.getElementById('editContact')?.value.trim();
+    const email = document.getElementById('editEmail')?.value.trim();
+    const address = document.getElementById('editAddress')?.value.trim();
 
-        try {
-            Utils.showLoading('Updating profile...');
-            await api.updateProfile(user._id, updatedData);
-            // Update local storage
-            api.saveUserData({ ...user, ...updatedData });
-            Utils.hideLoading();
-            this.closeModal('editProfileModal');
-            this.loadUserInfo();
-            this.loadProfileDetails();
-            Utils.showToast('Profile updated successfully!', 'success');
-        } catch (error) {
-            Utils.hideLoading();
-            Utils.showToast(error.message || 'Failed to update profile', 'error');
-        }
+    // Validate required fields
+    if (!name || !studentId || !course || !yearLevel || !contactNumber || !email || !address) {
+        Utils.showToast('All fields are required', 'warning');
+        return;
     }
+    if (!email.includes('@')) {
+        Utils.showToast('Please enter a valid email address containing @', 'warning');
+        return;
+    }
+    if (contactNumber && !/^[0-9]{11}$/.test(contactNumber)) {
+        Utils.showToast('Contact number must be 11 digits', 'warning');
+        return;
+    }
+
+    const updatedData = {
+        name: name,
+        studentId: studentId,
+        course: course,
+        yearLevel: yearLevel,
+        contactNumber: contactNumber,
+        email: email,
+        address: address
+    };
+
+    try {
+        Utils.showLoading('Updating profile...');
+        await api.updateProfile(user._id, updatedData);
+        // Update local storage
+        api.saveUserData({ ...user, ...updatedData });
+        Utils.hideLoading();
+        this.closeModal('editProfileModal');
+        this.loadUserInfo();
+        this.loadProfileDetails();
+        Utils.showToast('Profile updated successfully!', 'success');
+    } catch (error) {
+        Utils.hideLoading();
+        Utils.showToast(error.message || 'Failed to update profile', 'error');
+    }
+}
 
     /**
      * Open change password modal
@@ -906,42 +941,52 @@ class StudentDashboard {
             modal.id = 'studentEditRequestModal';
             modal.className = 'modal-overlay hidden';
             modal.innerHTML = `
-                <div class="modal" style="max-width:600px;">
-                    <div class="modal-header">
-                        <h3>Edit Your Request</h3>
-                        <button class="modal-close" onclick="StudentDashboard.closeEditModal()">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="studentEditRequestForm">
-                            <input type="hidden" id="editRequestId">
-                            <div class="form-group">
-                                <label>Document Type</label>
-                                <input type="text" class="form-input" id="editDocType" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Purpose</label>
-                                <input type="text" class="form-input" id="editPurpose" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Copies</label>
-                                <input type="number" class="form-input" id="editCopies" min="1" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Semester/Year</label>
-                                <input type="text" class="form-input" id="editSemesterYear">
-                            </div>
-                            <div class="form-group">
-                                <label>Notes</label>
-                                <textarea class="form-input" id="editNotes" rows="2"></textarea>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" onclick="StudentDashboard.closeEditModal()">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
+            <div class="modal" style="max-width:600px;">
+                <div class="modal-header">
+                    <h3>Edit Your Request</h3>
+                    <button class="modal-close" onclick="StudentDashboard.closeEditModal()">&times;</button>
                 </div>
-            `;
+                <div class="modal-body">
+                    <form id="studentEditRequestForm">
+                        <input type="hidden" id="editRequestId">
+                        <div class="form-group">
+                            <label>Document Type </label>
+                            <select class="form-input" id="editDocType" required>
+                                ${CONFIG.DOCUMENT_TYPES.map(type => `<option value="${type}">${type}</option>`).join('')}
+                            </select><span class="required">*</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Purpose <span class="required">*</span></label>
+                            <select class="form-input" id="editPurpose" required>
+                                ${CONFIG.PURPOSES.map(purpose => `<option value="${purpose}">${purpose}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Copies <span class="required">*</span></label>
+                            <input type="number" class="form-input" id="editCopies" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Semester/Year <span class="required">*</span></label>
+                            <select class="form-input" id="editSemesterYear" required>
+                                <option value="">Select Semester & Year</option>
+                                <option value="1st Semester 2024-2025">1st Semester 2024-2025</option>
+                                <option value="2nd Semester 2024-2025">2nd Semester 2024-2025</option>
+                                <option value="1st Semester 2025-2026">1st Semester 2025-2026</option>
+                                <option value="2nd Semester 2025-2026">2nd Semester 2025-2026</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea class="form-input" id="editNotes" rows="2"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="StudentDashboard.closeEditModal()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
             document.body.appendChild(modal);
         }
 
@@ -965,14 +1010,25 @@ class StudentDashboard {
     }
 
     static async saveEditedRequest() {
-        const id = document.getElementById('editRequestId').value;
-        const updatedData = {
-            documentType: document.getElementById('editDocType').value,
-            purpose: document.getElementById('editPurpose').value,
-            copies: parseInt(document.getElementById('editCopies').value),
-            semesterYear: document.getElementById('editSemesterYear').value,
-            notes: document.getElementById('editNotes').value
-        };
+    const docType = document.getElementById('editDocType').value;
+    const purpose = document.getElementById('editPurpose').value;
+    const copies = document.getElementById('editCopies').value;
+    const semesterYear = document.getElementById('editSemesterYear').value;
+    const notes = document.getElementById('editNotes').value;
+
+    if (!docType || !purpose || !copies || !semesterYear) {
+        Utils.showToast('Please fill in all required fields (Document Type, Purpose, Copies, Semester/Year)', 'warning');
+        return;
+    }
+
+    const id = document.getElementById('editRequestId').value;
+    const updatedData = {
+        documentType: docType,
+        purpose: purpose,
+        copies: parseInt(copies),
+        semesterYear: semesterYear,
+        notes: notes
+    };
 
         try {
             Utils.showLoading('Updating request...');
