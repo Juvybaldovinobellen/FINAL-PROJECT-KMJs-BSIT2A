@@ -9,7 +9,7 @@ const generateToken = (id) => {
 // Register user
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role, studentId, course, yearLevel, contactNumber, address } = req.body;
+    const { name, email, password, role, studentId, course, yearLevel, contactNumber, personalEmail, address } = req.body;
     
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -21,7 +21,7 @@ const registerUser = async (req, res) => {
       studentId: role === 'student' ? studentId : undefined,
       course: role === 'student' ? course : undefined,
       yearLevel: role === 'student' ? yearLevel : undefined,
-      contactNumber, address
+      contactNumber, personalEmail: personalEmail || '', address
     });
     
     res.status(201).json({
@@ -60,6 +60,10 @@ const loginUser = async (req, res) => {
       role: user.role,
       studentId: user.studentId,
       course: user.course,
+      yearLevel: user.yearLevel,
+      contactNumber: user.contactNumber,
+      personalEmail: user.personalEmail,
+      address: user.address,
       token: generateToken(user._id)
     });
   } catch (error) {

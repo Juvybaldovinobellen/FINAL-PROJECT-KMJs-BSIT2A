@@ -156,6 +156,7 @@ class Auth {
         const course = document.getElementById('regCourse').value.trim();
         const yearLevel = document.getElementById('regYearLevel').value.trim();
         const contactNumber = document.getElementById('regContact').value.trim();
+        const personalEmail = document.getElementById('regPersonalEmail').value.trim();
         const email = document.getElementById('regEmail').value.trim();
         const password = document.getElementById('regPassword').value;
 
@@ -173,6 +174,7 @@ class Auth {
             role: CONFIG.ROLES.STUDENT,
             studentId, course, yearLevel,
             contactNumber: contactNumber || '',
+            personalEmail: personalEmail,
             address: document.getElementById('regAddress').value.trim() || ''
         };
 

@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   yearLevel: { type: String },
   contactNumber: { type: String },
   address: { type: String },
+  personalEmail: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 

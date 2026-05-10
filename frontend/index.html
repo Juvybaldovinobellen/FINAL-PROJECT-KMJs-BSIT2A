@@ -134,11 +134,25 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Course/Program <span class="required">*</span></label>
-                                <input type="text" class="form-input" id="regCourse" placeholder="e.g., BS Information Technology" required>
+                                <select class="form-input" id="regCourse" required>
+                                    <option value="" disabled selected>Select Course</option>
+                                    <option value="BS Information Technology">BS Information Technology</option>
+                                    <option value="BS Computer Science">BS Computer Science</option>
+                                    <option value="BS IT Animation">BS IT Animation</option>
+                                    <option value="BS Information System">BS Information System</option>
+                                    <option value="BS Computer Engineering">BS Computer Engineering</option>
+                                    <!-- Add other courses as needed -->
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label>Year Level <span class="required">*</span></label>
-                                <input type="text" class="form-input" id="regYearLevel" placeholder="e.g., 2nd Year" required>
+                                <select class="form-input" id="regYearLevel" required>
+                                    <option value="" disabled selected>Select Year Level</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-row">
