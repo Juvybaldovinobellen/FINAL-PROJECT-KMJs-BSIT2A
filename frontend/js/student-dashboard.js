@@ -448,13 +448,17 @@ class StudentDashboard {
             return;
         }
 
+        const isAnonymous = document.getElementById('feedbackAnonymous')?.checked || false;
+        console.log('IS ANONYMOUS?', isAnonymous);
+
         try {
             Utils.showLoading('Submitting feedback...');
             await api.submitFeedback({
                 rating,
                 category,
                 message: document.getElementById('feedbackMessage')?.value?.trim() || '',
-                emoji: ''
+                emoji: '',
+                isAnonymous 
             });
             Utils.hideLoading();
             Utils.showToast('Thank you for your feedback!', 'success');

@@ -44,7 +44,7 @@ app.get('/api/test', (req, res) => {
 
 // ========== FEEDBACK ROUTES ==========
 // POST – anyone can submit feedback (or add authenticate if you want only logged-in users)
-app.post('/api/feedback', submitFeedback);
+app.post('/api/feedback', authenticate, submitFeedback);
 // GET – only staff can view all feedback
 app.get('/api/feedback', authenticate, isStaff, getAllFeedback);
 

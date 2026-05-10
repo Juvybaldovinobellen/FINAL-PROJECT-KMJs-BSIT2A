@@ -6,9 +6,10 @@ const feedbackSchema = new mongoose.Schema({
   category: { 
     type: String, 
     required: true,
-    enum: ['Document Request Process', 'Technical Support', 'Website Feedback', 'Other']
-  },
+    enum: ['Document Request Process', 'System Performance', 'User Interface', 'Notifications', 'Staff Service', 'Others']
+},
   message: { type: String, trim: true },
+  isAnonymous: { type: Boolean, default: false },  
   createdAt: { type: Date, default: Date.now }
 });
 
