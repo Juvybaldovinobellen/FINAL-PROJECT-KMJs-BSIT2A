@@ -1,9 +1,6 @@
-Here is a **ready‑to‑paste** `README.md` file. Replace only the placeholders in `[ ]` (live URL, contributor names, screenshot descriptions). The rest is final.
-
-```markdown
 # BU Transakto – Registrar Document Request Management System
 
-![BU Logo](frontend/img/transakto-logo.png)
+![BU Logo](img/transakto1.png)
 ## 📌 Live Demo
 [https://bu-transakto.onrender.com](https://bu-transakto.onrender.com)   <!-- replace with your actual Render URL -->
 
@@ -71,9 +68,9 @@ BU Transakto is a full‑stack web application that streamlines document request
 3. **Set up environment variables**  
    Create a `.env` file inside `backend/` with:
    ```
-   MONGO_URI=your_mongodb_atlas_connection_string
-   JWT_SECRET=your_super_secret_key
-   PORT=5000
+   MONGO_URI= mongodb+srv://KMJs:KMJs@finalprojectbutransakto.ftmikhy.mongodb.net/?appName=FinalProjectBUTransakto
+   JWT_SECRET= aefb48916ad1a3291bee3e7f33cfb82afe3ec70b0b1baba8eaa343a1919f3642
+   PORT= 5000
    ```
 
 4. **Run the backend**  
@@ -104,17 +101,23 @@ FINAL-PROJECT-KMJs-BSIT2A/
 ```
 
 ## 📸 Screenshots
-
-(Add screenshots here: landing page, student dashboard, staff dashboard, edit request modal, feedback form, offline mode, etc.)
-
+![Landing Page](img/landingPage.png)
 - **Landing Page** – role selection with glassmorphism design
+![Student Dashboard](img/studentDashboard.png)
 - **Student Dashboard** – statistics and recent requests
+![New Request Form](img/newRequestForm.png)
 - **New Request Form** – dropdowns for course, year, semester
+![Edit Request Modal](img/editRequestModal.png)
 - **Edit Request Modal** – pre‑filled dropdowns for pending requests
+![Feedback Form](img/feedbackForm.png)
 - **Feedback Form** – anonymous submission checkbox
+![Staff Dashboard](img/studentDashboard.png)
 - **Staff Dashboard** – statistics and request summary
+![Staff All Requests](img/staffAllRequests.png)
 - **Staff All Requests** – search/filter and status update
+![Staff Feedback](img/staffFeedback.png)
 - **Staff Feedback** – anonymised entries when chosen
+![PWA Offline Mode](img/PWAOfflineMode.png)
 - **PWA Offline Mode** – page loads even with network offline
 
 ## 🧪 Testing
@@ -124,11 +127,8 @@ Lighthouse scores (localhost): Performance 96, Accessibility 100, Best Practices
 ## 🔗 Links
 
 - **GitHub Repository:** https://github.com/Juvybaldovinobellen/FINAL-PROJECT-KMJs-BSIT2A.git  
-- **Live Demo:**https://bu-transakto.onrender.com/
+- **Live Demo:** https://bu-transakto.onrender.com/
 
 ---
 
 _This project was developed as the final requirement for IT 112 – Web Systems and Technologies._
-```
-
-Copy the whole block above into your `README.md` file, replace the live URL and contributor names, and add your actual screenshots. Then commit and push.
